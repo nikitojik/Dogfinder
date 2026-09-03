@@ -1,0 +1,6 @@
+.env
+.idea/
+.vscode/
+*.db
+.ruff_cache/
+.pytest_cache/
