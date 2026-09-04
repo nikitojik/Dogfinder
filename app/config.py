@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     s3_secret_key: str
     s3_bucket: str = "pet-photos"
 
+    secret_key: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 10080
+
 
 @lru_cache
 def get_settings() -> Settings:
