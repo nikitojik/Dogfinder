@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from sqlalchemy import text
 
 from app.api.auth import router as auth_router
+from app.api.listings import router as listings_router
 from app.config import settings
 from app.db import engine
 
@@ -23,6 +24,7 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(listings_router)
 
 
 @app.get("/health", tags=["service"])
