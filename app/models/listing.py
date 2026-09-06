@@ -8,6 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
+    from app.models.photo import Photo
     from app.models.response import Response
     from app.models.user import User
 
@@ -56,6 +57,11 @@ class Listing(Base, TimestampMixin):
     owner: Mapped["User"] = relationship(back_populates="listings")
     responses: Mapped[list["Response"]] = relationship(
         back_populates="listing", cascade="all, delete-orphan"
+    )
+    photos: Mapped[list["Photo"]] = relationship(
+        back_populates="listing",
+        cascade="all, delete-orphan",
+        order_by="Photo.sort_order",
     )
 
     __table_args__ = (Index("ix_listings_feed", "kind", "status", "happened_at"),)

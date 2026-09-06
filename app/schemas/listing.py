@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.listing import Kind, Sex, Size, Status
+from app.schemas.photo import PhotoRead
 from app.schemas.user import UserRead
 
 
@@ -55,6 +56,7 @@ class ListingRead(BaseModel):
     contact_phone: str | None
     created_at: datetime
     owner: UserRead
+    photos: list[PhotoRead] = []
 
 
 class ListingPage(BaseModel):

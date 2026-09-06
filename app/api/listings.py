@@ -20,7 +20,9 @@ async def create_listing(data: ListingCreate, user: CurrentUser, session: Sessio
     await session.commit()
 
     result = await session.scalar(
-        select(Listing).where(Listing.id == listing.id).options(selectinload(Listing.owner))
+        select(Listing)
+        .where(Listing.id == listing.id)
+        .options(selectinload(Listing.owner), selectinload(Listing.photos))
     )
     return result
 
@@ -53,7 +55,7 @@ async def list_listings(
     items = await session.scalars(
         select(Listing)
         .where(*conditions)
-        .options(selectinload(Listing.owner))
+        .options(selectinload(Listing.owner), selectinload(Listing.photos))
         .order_by(Listing.happened_at.desc())
         .limit(limit)
         .offset(offset)
@@ -65,7 +67,9 @@ async def list_listings(
 @router.get("/{listing_id}", response_model=ListingRead)
 async def get_listing(listing_id: int, session: SessionDep) -> Listing:
     listing = await session.scalar(
-        select(Listing).where(Listing.id == listing_id).options(selectinload(Listing.owner))
+        select(Listing)
+        .where(Listing.id == listing_id)
+        .options(selectinload(Listing.owner), selectinload(Listing.photos))
     )
     if listing is None:
         raise HTTPException(status_code=404, detail="Объявление не найдено")
@@ -77,7 +81,9 @@ async def update_listing(
     listing_id: int, data: ListingUpdate, user: CurrentUser, session: SessionDep
 ) -> Listing:
     listing = await session.scalar(
-        select(Listing).where(Listing.id == listing_id).options(selectinload(Listing.owner))
+        select(Listing)
+        .where(Listing.id == listing_id)
+        .options(selectinload(Listing.owner), selectinload(Listing.photos))
     )
     if listing is None:
         raise HTTPException(status_code=404, detail="Объявление не найдено")
@@ -88,7 +94,7 @@ async def update_listing(
         setattr(listing, field, value)
 
     await session.commit()
-    await session.refresh(listing)
+    await session.refresh(listing, attribute_names=["updated_at"])
     return listing
 
 
