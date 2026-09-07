@@ -2,6 +2,7 @@ import enum
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from geoalchemy2 import Geography
 from sqlalchemy import DateTime, Enum, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -63,6 +64,7 @@ class Listing(Base, TimestampMixin):
         cascade="all, delete-orphan",
         order_by="Photo.sort_order",
     )
+    location: Mapped[str | None] = mapped_column(Geography(name="POINT", srid=4326), index=True)
 
     __table_args__ = (Index("ix_listings_feed", "kind", "status", "happened_at"),)
 
