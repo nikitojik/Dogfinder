@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, status
-from sqlalchemy import func, select
+from sqlalchemy import func, null, select
 from sqlalchemy.orm import selectinload
 
 from app.api.deps import CurrentUser, SessionDep
@@ -40,6 +40,10 @@ async def list_listings(
     breed: str | None = None,
     size: Size | None = None,
     since: datetime | None = None,
+    lat: Annotated[float | None, Query(ge=-90, le=90)] = None,
+    lon: Annotated[float | None, Query(ge=-180, le=180)] = None,
+    radius_km: Annotated[float | None, Query(gt=0, le=500)] = None,
+    sort: Annotated[str, Query(pattern="^(date|distance)$")] = "date",
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> ListingPage:
@@ -55,16 +59,43 @@ async def list_listings(
     if since is not None:
         conditions.append(Listing.happened_at >= since)
 
+    has_point = lat is not None and lon is not None
+    if (lat is None) != (lon is None):
+        raise HTTPException(status_code=400, detail="Нужны обе координаты: lat и lon")
+    if radius_km is not None and not has_point:
+        raise HTTPException(status_code=400, detail="Радиус без координат не имеет смысла")
+
+    origin = make_point(lat, lon) if has_point else None
+
+    if origin is not None and radius_km is not None:
+        conditions.append(func.ST_DWithin(Listing.location, origin, radius_km * 1000))
+
     total = await session.scalar(select(func.count()).select_from(Listing).where(*conditions))
 
-    items = await session.scalars(
-        select(Listing)
-        .where(*conditions)
-        .options(selectinload(Listing.owner), selectinload(Listing.photos))
-        .order_by(Listing.happened_at.desc())
+    distance = (
+        func.ST_Distance(Listing.location, origin).label("distance_m")
+        if origin is not None
+        else null().label("distance_m")
+    )
+
+    query = select(Listing, distance).where(*conditions)
+
+    if sort == "distance" and origin is not None:
+        query = query.order_by(distance.asc().nulls_last())
+    else:
+        query = query.order_by(Listing.happened_at.desc())
+
+    rows = await session.execute(
+        query.options(selectinload(Listing.owner), selectinload(Listing.photos))
         .limit(limit)
         .offset(offset)
     )
+
+    items = []
+    for listing, distance_m in rows:
+        item = ListingRead.model_validate(listing)
+        item.distance_m = round(distance_m) if distance_m is not None else None
+        items.append(item)
 
     return ListingPage(items=list(items), total=total or 0, limit=limit, offset=offset)
 

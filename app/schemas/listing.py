@@ -63,6 +63,7 @@ class ListingRead(BaseModel):
     photos: list[PhotoRead] = []
     lat: float | None
     lon: float | None
+    distance_m: int | None = None
 
 
 class ListingPage(BaseModel):
