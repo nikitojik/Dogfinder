@@ -37,12 +37,11 @@ POSTGIS_TABLES = {
 }
 
 
-def include_object(object, name, type_, reflected, compare_to):
-    if type_ == "table" and name in POSTGIS_TABLES:
-        return False
-    if type_ == "index" and name is not None and name.startswith("idx_"):  # noqa: SIM103
-        return False
-    return True
+def include_object(object, name, type_, reflected, compare_to):  # noqa: SIM103
+    is_postgis_table = type_ == "table" and name in POSTGIS_TABLES
+    is_spatial_index = type_ == "index" and name is not None and name.startswith("idx_")
+    is_location_column = type_ == "column" and name == "location"
+    return not (is_postgis_table or is_spatial_index or is_location_column)
 
 
 # other values from the config, defined by the needs of env.py,

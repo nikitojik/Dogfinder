@@ -9,26 +9,43 @@ from app.api.deps import CurrentUser, SessionDep
 from app.models import Listing
 from app.models.listing import Kind, Size, Status
 from app.schemas.listing import ListingCreate, ListingPage, ListingRead, ListingUpdate
-from app.services.geo import make_point
+from app.services.geo import geocode
+from app.services.geo_utils import make_point
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
 
 @router.post("", response_model=ListingRead, status_code=status.HTTP_201_CREATED)
 async def create_listing(data: ListingCreate, user: CurrentUser, session: SessionDep) -> Listing:
-    payload = data.model_dump(exclude={"lat", "lon"})
-    location = (
-        make_point(data.lat, data.lon) if data.lat is not None and data.lon is not None else None
-    )
+    payload = data.model_dump(exclude={"lat", "lon", "address"})
+
+    lat, lon = data.lat, data.lon
+    if lat is None and lon is None and data.address:
+        geo = await geocode(data.address, session)
+        if geo is None:
+            raise HTTPException(status_code=422, detail="Не удалось определить координаты адреса")
+        lat, lon = geo["lat"], geo["lon"]
+
+    location = make_point(lat, lon) if lat is not None and lon is not None else None
+
     listing = Listing(**payload, owner_id=user.id, location=location)
     session.add(listing)
     await session.commit()
 
-    result = await session.scalar(
+    return await session.scalar(
         select(Listing)
         .where(Listing.id == listing.id)
         .options(selectinload(Listing.owner), selectinload(Listing.photos))
     )
+
+
+@router.get("/geocode", tags=["geo"])
+async def geocode_address(
+    q: Annotated[str, Query(min_length=3, max_length=255)], session: SessionDep
+) -> dict:
+    result = await geocode(q, session)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Адрес не найден")
     return result
 
 
@@ -124,8 +141,14 @@ async def update_listing(
     payload = data.model_dump(exclude_unset=True)
     lat = payload.pop("lat", None)
     lon = payload.pop("lon", None)
+    address = payload.pop("address", None)
+
     for field, value in payload.items():
         setattr(listing, field, value)
+    if lat is None and lon is None and address:
+        geo = await geocode(address, session)
+        if geo is not None:
+            lat, lon = geo["lat"], geo["lon"]
 
     if lat is not None and lon is not None:
         listing.location = make_point(lat, lon)

@@ -7,7 +7,7 @@ from sqlalchemy import DateTime, Enum, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
-from app.services.geo import point_to_latlon
+from app.services.geo_utils import point_to_latlon
 
 if TYPE_CHECKING:
     from app.models.photo import Photo
