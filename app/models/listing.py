@@ -7,6 +7,7 @@ from sqlalchemy import DateTime, Enum, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
+from app.services.geo import point_to_latlon
 
 if TYPE_CHECKING:
     from app.models.photo import Photo
@@ -67,6 +68,16 @@ class Listing(Base, TimestampMixin):
     location: Mapped[str | None] = mapped_column(Geography(name="POINT", srid=4326), index=True)
 
     __table_args__ = (Index("ix_listings_feed", "kind", "status", "happened_at"),)
+
+    @property
+    def lat(self) -> float | None:
+        coords = point_to_latlon(self.location)
+        return coords[0] if coords else None
+
+    @property
+    def lon(self) -> float | None:
+        coords = point_to_latlon(self.location)
+        return coords[1] if coords else None
 
     def __repr__(self) -> str:
         return f"Listing(id={self.id}, kind={self.kind}, title={self.title!r})"

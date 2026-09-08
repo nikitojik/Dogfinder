@@ -20,6 +20,8 @@ class ListingCreate(BaseModel):
     sex: Sex = Sex.UNKNOWN
 
     contact_phone: str | None = Field(default=None, max_length=20)
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
 
 
 class ListingUpdate(BaseModel):
@@ -35,6 +37,8 @@ class ListingUpdate(BaseModel):
     sex: Sex | None = None
 
     contact_phone: str | None = Field(default=None, max_length=20)
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
 
 
 class ListingRead(BaseModel):
@@ -57,6 +61,8 @@ class ListingRead(BaseModel):
     created_at: datetime
     owner: UserRead
     photos: list[PhotoRead] = []
+    lat: float | None
+    lon: float | None
 
 
 class ListingPage(BaseModel):
