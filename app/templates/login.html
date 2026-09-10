@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Вход — DogFinder{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>Вход</h1>
+    <form id="login-form">
+        <label>
+            Email
+            <input type="email" name="email" required>
+        </label>
+        <label>
+            Пароль
+            <input type="password" name="password" required minlength="8">
+        </label>
+        <p class="error" id="error"></p>
+        <button type="submit">Войти</button>
+    </form>
+    <p class="hint">Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const form = document.getElementById("login-form");
+const error = document.getElementById("error");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    error.textContent = "";
+
+    const data = Object.fromEntries(new FormData(form));
+    const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+        location.href = "/";
+        return;
+    }
+
+    const body = await response.json();
+    error.textContent = body.detail ?? "Не удалось войти";
+});
+</script>
+{% endblock %}

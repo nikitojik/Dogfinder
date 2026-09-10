@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — DogFinder{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>Регистрация</h1>
+    <form id="register-form">
+        <label>
+            Имя
+            <input type="text" name="name" required maxlength="100">
+        </label>
+        <label>
+            Email
+            <input type="email" name="email" required>
+        </label>
+        <label>
+            Телефон
+            <input type="tel" name="phone" required placeholder="+7 900 123-45-67">
+        </label>
+        <label>
+            Пароль
+            <input type="password" name="password" required minlength="8">
+        </label>
+        <p class="error" id="error"></p>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <p class="hint">Уже есть аккаунт? <a href="/login">Войти</a></p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const form = document.getElementById("register-form");
+const error = document.getElementById("error");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    error.textContent = "";
+
+    const data = Object.fromEntries(new FormData(form));
+    const response = await fetch("/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        const body = await response.json();
+        error.textContent = typeof body.detail === "string"
+            ? body.detail
+            : "Проверьте правильность заполнения полей";
+        return;
+    }
+
+    await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email, password: data.password }),
+    });
+    location.href = "/";
+});
+</script>
+{% endblock %}

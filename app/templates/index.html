@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="map"></div>
+<div class="map-legend">
+    <div><span class="dot lost"></span> Пропала</div>
+    <div><span class="dot found"></span> Найдена</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/map.js"></script>
+<script>
+(async () => {
+    const map = createMap("map");
+    const listings = await loadListings();
+    const cluster = renderMarkers(map, listings);
+
+    if (listings.length > 0) {
+        map.fitBounds(cluster.getBounds(), { padding: [50, 50], maxZoom: 14 });
+    }
+})();
+</script>
+{% endblock %}

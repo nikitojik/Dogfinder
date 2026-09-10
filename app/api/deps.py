@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Cookie, Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,6 +16,7 @@ SessionDep = Annotated[AsyncSession, Depends(get_session)]
 async def get_current_user(
     session: SessionDep,
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer_scheme)] = None,
+    access_token: Annotated[str | None, Cookie()] = None,
 ) -> User:
     unauthorized = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -23,10 +24,11 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    if credentials is None:
+    token = credentials.credentials if credentials else access_token
+    if token is None:
         raise unauthorized
 
-    user_id = decode_access_token(credentials.credentials)
+    user_id = decode_access_token(token)
     if user_id is None:
         raise unauthorized
 
@@ -37,4 +39,18 @@ async def get_current_user(
     return user
 
 
+async def get_optional_user(
+    session: SessionDep,
+    access_token: Annotated[str | None, Cookie()] = None,
+) -> User | None:
+    if access_token is None:
+        return None
+    user_id = decode_access_token(access_token)
+    if user_id is None:
+        return None
+    user = await session.get(User, user_id)
+    return user if user and user.is_active else None
+
+
 CurrentUser = Annotated[User, Depends(get_current_user)]
+OptionalUser = Annotated[User | None, Depends(get_optional_user)]
