@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Мои объявления — DogFinder{% endblock %}
+
+{% block content %}
+<div class="my-page">
+    <h1>Мои объявления</h1>
+    <div id="listings" class="my-list">
+        <p class="loading">Загружаем…</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/my-listings.js"></script>
+{% endblock %}

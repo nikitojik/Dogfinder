@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Новое объявление — DogFinder{% endblock %}
+
+{% block content %}
+<div class="create-page">
+    <h1>Новое объявление</h1>
+
+    <form id="listing-form">
+        <div class="kind-choice">
+            <label>
+                <input type="radio" name="kind" value="lost" checked>
+                <span>Пропала собака</span>
+            </label>
+            <label>
+                <input type="radio" name="kind" value="found">
+                <span>Нашёл собаку</span>
+            </label>
+        </div>
+
+        <label>
+            Заголовок
+            <input type="text" name="title" required minlength="3" maxlength="120"
+                   placeholder="Пропал рыжий корги у вокзала">
+        </label>
+
+        <label>
+            Когда это произошло
+            <input type="datetime-local" name="happened_at" required>
+        </label>
+
+        <label>
+            Описание
+            <textarea name="description" rows="4" maxlength="2000"
+                      placeholder="Приметы, обстоятельства, поведение"></textarea>
+        </label>
+
+        <div class="row">
+            <label>
+                Порода
+                <input type="text" name="breed" maxlength="60">
+            </label>
+            <label>
+                Окрас
+                <input type="text" name="color" maxlength="60">
+            </label>
+        </div>
+
+        <div class="row">
+            <label>
+                Размер
+                <select name="size">
+                    <option value="">Не указан</option>
+                    <option value="small">Мелкая, до 35 см</option>
+                    <option value="medium">Средняя, 35–55 см</option>
+                    <option value="large">Крупная, выше 55 см</option>
+                </select>
+            </label>
+            <label>
+                Пол
+                <select name="sex">
+                    <option value="unknown">Неизвестен</option>
+                    <option value="male">Кобель</option>
+                    <option value="female">Сука</option>
+                </select>
+            </label>
+        </div>
+
+        <label>
+            Уточнение к размеру
+            <input type="text" name="size_note" maxlength="120"
+                   placeholder="Щенок, но лапы крупные">
+        </label>
+
+        <fieldset class="location-block">
+            <legend>Место</legend>
+            <div class="address-search">
+                <input type="text" id="address" placeholder="Улица, дом или ориентир">
+                <button type="button" id="find-address">Найти</button>
+            </div>
+            <p class="hint-small">Или кликните по карте, чтобы поставить точку</p>
+            <div id="picker-map"></div>
+            <p class="coords" id="coords"></p>
+        </fieldset>
+
+        <fieldset class="photos-block">
+            <legend>Фотографии</legend>
+            <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple>
+            <div class="photo-preview" id="photo-preview"></div>
+            <p class="hint-small">До 8 фотографий, каждая не больше 10 МБ</p>
+        </fieldset>
+
+        <label>
+            Телефон для связи
+            <input type="tel" name="contact_phone" maxlength="20"
+                   placeholder="Оставьте пустым, чтобы использовать телефон профиля">
+        </label>
+
+        <p class="error" id="error"></p>
+        <button type="submit" id="submit-btn">Опубликовать</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/map.js"></script>
+<script src="/static/js/listing-new.js"></script>
+{% endblock %}

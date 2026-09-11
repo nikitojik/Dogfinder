@@ -34,6 +34,13 @@ async def register_page(request: Request, user: OptionalUser):
     return render(request, "register.html", user)
 
 
+@router.get("/listings/new", response_class=HTMLResponse)
+async def listing_new_page(request: Request, user: OptionalUser):
+    if user is None:
+        return RedirectResponse("/login", status_code=302)
+    return render(request, "listing_new.html", user)
+
+
 @router.get("/listings/{listing_id}", response_class=HTMLResponse)
 async def listing_page(listing_id: int, request: Request, user: OptionalUser, session: SessionDep):
     listing = await session.scalar(
@@ -45,3 +52,10 @@ async def listing_page(listing_id: int, request: Request, user: OptionalUser, se
         raise HTTPException(status_code=404, detail="Объявление не найдено")
 
     return render(request, "listing.html", user, listing=listing)
+
+
+@router.get("/my", response_class=HTMLResponse)
+async def my_listings_page(request: Request, user: OptionalUser):
+    if user is None:
+        return RedirectResponse("/login", status_code=302)
+    return render(request, "my_listings.html", user)

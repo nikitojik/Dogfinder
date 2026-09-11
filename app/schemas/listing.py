@@ -66,6 +66,7 @@ class ListingRead(BaseModel):
     lat: float | None
     lon: float | None
     distance_m: int | None = None
+    response_count: int = 0
 
 
 class ListingPage(BaseModel):

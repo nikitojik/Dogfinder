@@ -6,7 +6,7 @@ from sqlalchemy import func, null, select
 from sqlalchemy.orm import selectinload
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import Listing
+from app.models import Listing, Response
 from app.models.listing import Kind, Size, Status
 from app.schemas.listing import ListingCreate, ListingPage, ListingRead, ListingUpdate
 from app.services.geo import geocode
@@ -115,6 +115,25 @@ async def list_listings(
         items.append(item)
 
     return ListingPage(items=list(items), total=total or 0, limit=limit, offset=offset)
+
+
+@router.get("/mine", response_model=list[ListingRead])
+async def my_listings(user: CurrentUser, session: SessionDep) -> list[ListingRead]:
+    rows = await session.execute(
+        select(Listing, func.count(Response.id))
+        .outerjoin(Response, Response.listing_id == Listing.id)
+        .where(Listing.owner_id == user.id)
+        .options(selectinload(Listing.owner), selectinload(Listing.photos))
+        .group_by(Listing.id)
+        .order_by(Listing.created_at.desc())
+    )
+
+    items = []
+    for listing, count in rows:
+        item = ListingRead.model_validate(listing)
+        item.response_count = count
+        items.append(item)
+    return items
 
 
 @router.get("/{listing_id}", response_model=ListingRead)
