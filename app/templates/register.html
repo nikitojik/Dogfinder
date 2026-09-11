@@ -29,35 +29,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-const form = document.getElementById("register-form");
-const error = document.getElementById("error");
-
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    error.textContent = "";
-
-    const data = Object.fromEntries(new FormData(form));
-    const response = await fetch("/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        const body = await response.json();
-        error.textContent = typeof body.detail === "string"
-            ? body.detail
-            : "Проверьте правильность заполнения полей";
-        return;
-    }
-
-    await fetch("/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email, password: data.password }),
-    });
-    location.href = "/";
-});
-</script>
+<script src="/static/js/auth.js"></script>
 {% endblock %}

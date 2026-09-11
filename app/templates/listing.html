@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.title }} — DogFinder{% endblock %}
+
+{% block content %}
+<div class="listing-page">
+    <div class="listing-main">
+        {% if listing.photos %}
+        <div class="gallery">
+            <img id="main-photo" src="{{ listing.photos[0].url }}" alt="">
+            {% if listing.photos|length > 1 %}
+            <div class="thumbs">
+                {% for photo in listing.photos %}
+                <img src="{{ photo.thumb_url or photo.url }}"
+                     data-full="{{ photo.url }}" alt="">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <span class="badge {{ listing.kind.value }}">
+            {{ "Пропала" if listing.kind.value == "lost" else "Найдена" }}
+        </span>
+        <h1>{{ listing.title }}</h1>
+
+        <dl class="props">
+            <dt>Дата</dt>
+            <dd>{{ listing.happened_at.strftime("%d.%m.%Y") }}</dd>
+
+            {% if listing.breed %}
+            <dt>Порода</dt>
+            <dd>{{ listing.breed }}</dd>
+            {% endif %}
+
+            {% if listing.color %}
+            <dt>Окрас</dt>
+            <dd>{{ listing.color }}</dd>
+            {% endif %}
+
+            {% if listing.size %}
+            <dt>Размер</dt>
+            <dd>
+                {{ {"small": "Мелкая", "medium": "Средняя", "large": "Крупная"}[listing.size.value] }}
+                {% if listing.size_note %}<span class="note">{{ listing.size_note }}</span>{% endif %}
+            </dd>
+            {% endif %}
+
+            {% if listing.sex.value != "unknown" %}
+            <dt>Пол</dt>
+            <dd>{{ "Кобель" if listing.sex.value == "male" else "Сука" }}</dd>
+            {% endif %}
+        </dl>
+
+        {% if listing.description %}
+        <p class="description">{{ listing.description }}</p>
+        {% endif %}
+    </div>
+
+    <aside class="listing-side">
+        <div class="contact-card">
+            <div class="contact-name">{{ listing.owner.name }}</div>
+            <a href="tel:{{ listing.contact_phone or listing.owner.phone }}" class="phone">
+                {{ listing.contact_phone or listing.owner.phone }}
+            </a>
+        </div>
+
+        {% if listing.lat is not none %}
+        <div id="mini-map"
+             data-lat="{{ listing.lat }}"
+             data-lon="{{ listing.lon }}"
+             data-kind="{{ listing.kind.value }}"></div>
+        {% endif %}
+
+        {% if user and user.id != listing.owner.id %}
+        <div class="respond-card">
+            <h3>Видели эту собаку?</h3>
+            <form id="respond-form" data-listing-id="{{ listing.id }}">
+                <textarea name="message" rows="4" required minlength="10"
+                          placeholder="Где и когда видели, приметы"></textarea>
+                <input type="tel" name="contact_phone" placeholder="Телефон (необязательно)">
+                <p class="error" id="respond-error"></p>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+        {% elif not user %}
+        <p class="hint"><a href="/login">Войдите</a>, чтобы откликнуться</p>
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/map.js"></script>
+<script src="/static/js/listing.js"></script>
+{% endblock %}

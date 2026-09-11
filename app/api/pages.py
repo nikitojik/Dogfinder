@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
-from app.api.deps import OptionalUser
+from app.api.deps import OptionalUser, SessionDep
+from app.models import Listing
 
 router = APIRouter(include_in_schema=False)
 
@@ -29,3 +32,16 @@ async def register_page(request: Request, user: OptionalUser):
     if user is not None:
         return RedirectResponse("/", status_code=302)
     return render(request, "register.html", user)
+
+
+@router.get("/listings/{listing_id}", response_class=HTMLResponse)
+async def listing_page(listing_id: int, request: Request, user: OptionalUser, session: SessionDep):
+    listing = await session.scalar(
+        select(Listing)
+        .where(Listing.id == listing_id)
+        .options(selectinload(Listing.owner), selectinload(Listing.photos))
+    )
+    if listing is None:
+        raise HTTPException(status_code=404, detail="Объявление не найдено")
+
+    return render(request, "listing.html", user, listing=listing)

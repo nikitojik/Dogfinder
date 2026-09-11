@@ -21,28 +21,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-const form = document.getElementById("login-form");
-const error = document.getElementById("error");
-
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    error.textContent = "";
-
-    const data = Object.fromEntries(new FormData(form));
-    const response = await fetch("/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-        location.href = "/";
-        return;
-    }
-
-    const body = await response.json();
-    error.textContent = body.detail ?? "Не удалось войти";
-});
-</script>
+<script src="/static/js/auth.js"></script>
 {% endblock %}

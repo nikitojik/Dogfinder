@@ -175,3 +175,89 @@ button:hover { background: #333; }
 
 .dot.lost { background: #d32f2f; }
 .dot.found { background: #2e7d32; }
+
+.listing-page {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+@media (max-width: 800px) {
+    .listing-page { grid-template-columns: 1fr; }
+}
+
+.gallery #main-photo {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.thumbs {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.thumbs img {
+    width: 70px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.thumbs img:hover { opacity: 1; }
+
+.badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    margin-top: 1rem;
+}
+
+.badge.lost { background: #ffebee; color: #c62828; }
+.badge.found { background: #e8f5e9; color: #2e7d32; }
+
+.listing-page h1 { font-size: 1.5rem; margin: 0.5rem 0 1.5rem; }
+
+.props {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0.5rem 1rem;
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+}
+
+.props dt { color: #888; }
+.props dd { margin: 0; }
+.props .note { color: #888; font-size: 0.85rem; }
+
+.description { line-height: 1.6; white-space: pre-line; }
+
+.contact-card, .respond-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.contact-name { font-weight: 500; margin-bottom: 0.3rem; }
+.phone { font-size: 1.1rem; color: #1a1a1a; text-decoration: none; }
+
+#mini-map {
+    height: 220px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.respond-card h3 { font-size: 1rem; margin: 0 0 0.75rem; }
+.respond-card form { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.success { color: #2e7d32; font-size: 0.9rem; }

@@ -49,7 +49,7 @@ function escapeHtml(value) {
 
 async function loadListings(params = {}) {
     const query = new URLSearchParams({ limit: "100", ...params });
-    const response = await fetch(`/listings?${query}`);
+    const response = await fetch(`/api/listings?${query}`);
     if (!response.ok) {
         console.error("Не удалось загрузить объявления");
         return [];

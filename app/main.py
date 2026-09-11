@@ -29,10 +29,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(auth_router)
-app.include_router(listings_router)
-app.include_router(responses_router)
-app.include_router(photos_router)
+app.include_router(listings_router, prefix="/api")
+app.include_router(responses_router, prefix="/api")
+app.include_router(photos_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
 app.include_router(pages_router)
 BASE_DIR = Path(__file__).resolve().parent
 
