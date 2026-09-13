@@ -4,3 +4,6 @@
 *.db
 .ruff_cache/
 .pytest_cache/
+experiments/data/
+*.pt
+experiments/crops/
