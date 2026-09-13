@@ -633,6 +633,7 @@ dependencies = [
     { name = "geoalchemy2" },
     { name = "httpx" },
     { name = "jinja2" },
+    { name = "open-clip-torch" },
     { name = "passlib", extra = ["argon2"] },
     { name = "pillow" },
     { name = "pydantic", extra = ["email"] },
@@ -641,20 +642,19 @@ dependencies = [
     { name = "python-multipart" },
     { name = "shapely" },
     { name = "sqlalchemy", extra = ["asyncio"] },
+    { name = "torch" },
+    { name = "torchvision" },
+    { name = "ultralytics" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "httpx" },
-    { name = "open-clip-torch" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "ruff" },
-    { name = "torch" },
-    { name = "torchvision" },
-    { name = "ultralytics" },
 ]
 
 [package.metadata]
@@ -666,6 +666,7 @@ requires-dist = [
     { name = "geoalchemy2", specifier = ">=0.20.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "open-clip-torch", specifier = ">=3.3.0" },
     { name = "passlib", extras = ["argon2"], specifier = ">=1.7.4" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.13.5" },
@@ -674,20 +675,19 @@ requires-dist = [
     { name = "python-multipart", specifier = ">=0.0.32" },
     { name = "shapely", specifier = ">=2.1.2" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.52" },
+    { name = "torch", specifier = ">=2.14.0" },
+    { name = "torchvision", specifier = ">=0.29.0" },
+    { name = "ultralytics", specifier = ">=8.4.150" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.52.4" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "httpx", specifier = ">=0.28.1" },
-    { name = "open-clip-torch", specifier = ">=3.3.0" },
     { name = "pre-commit", specifier = ">=4.6.2" },
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "ruff", specifier = ">=0.16.5" },
-    { name = "torch", specifier = ">=2.14.0" },
-    { name = "torchvision", specifier = ">=0.29.0" },
-    { name = "ultralytics", specifier = ">=8.4.150" },
 ]
 
 [[package]]

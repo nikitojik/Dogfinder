@@ -1,3 +1,5 @@
+import asyncio
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -13,10 +15,22 @@ from app.api.photos import router as photos_router
 from app.api.responses import router as responses_router
 from app.config import settings
 from app.db import engine
+from app.ml.embedder import get_embedder
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if not settings.ml_lazy_load:
+        await asyncio.to_thread(get_embedder)
     yield
     await engine.dispose()
 

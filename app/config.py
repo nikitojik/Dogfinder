@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 10080
+    ml_lazy_load: bool = False
 
 
 @lru_cache
