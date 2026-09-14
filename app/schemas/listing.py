@@ -74,3 +74,10 @@ class ListingPage(BaseModel):
     total: int
     limit: int
     offset: int
+
+
+class MatchRead(BaseModel):
+    listing: ListingRead
+    score: float
+    visual_similarity: float
+    distance_m: int | None

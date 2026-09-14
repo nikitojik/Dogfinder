@@ -8,9 +8,10 @@ from sqlalchemy.orm import selectinload
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Listing, Response
 from app.models.listing import Kind, Size, Status
-from app.schemas.listing import ListingCreate, ListingPage, ListingRead, ListingUpdate
+from app.schemas.listing import ListingCreate, ListingPage, ListingRead, ListingUpdate, MatchRead
 from app.services.geo import geocode
 from app.services.geo_utils import make_point
+from app.services.matching import find_matches
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
@@ -195,3 +196,30 @@ async def delete_listing(listing_id: int, user: CurrentUser, session: SessionDep
 
     listing.status = Status.ARCHIVED
     await session.commit()
+
+
+@router.get("/{listing_id}/matches", response_model=list[MatchRead])
+async def listing_matches(
+    listing_id: int, user: CurrentUser, session: SessionDep
+) -> list[MatchRead]:
+    listing = await session.scalar(
+        select(Listing)
+        .where(Listing.id == listing_id)
+        .options(selectinload(Listing.owner), selectinload(Listing.photos))
+    )
+    if listing is None:
+        raise HTTPException(status_code=404, detail="Объявление не найдено")
+    if listing.owner_id != user.id:
+        raise HTTPException(status_code=403, detail="Совпадения видны только автору")
+
+    matches = await find_matches(listing, session)
+
+    return [
+        MatchRead(
+            listing=ListingRead.model_validate(item["listing"]),
+            score=round(item["score"], 3),
+            visual_similarity=round(item["visual"], 3),
+            distance_m=(round(item["distance_m"]) if item["distance_m"] is not None else None),
+        )
+        for item in matches
+    ]
