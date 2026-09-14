@@ -12,7 +12,7 @@ from app.schemas.photo import (
     UploadUrlRequest,
     UploadUrlResponse,
 )
-from app.services.photo_tasks import generate_thumbnail
+from app.services.photo_tasks import process_photo
 from app.services.storage import (
     build_object_key,
     create_upload_url,
@@ -112,7 +112,7 @@ async def confirm_photo(
         raise HTTPException(status_code=409, detail="Эта фотография уже добавлена") from None
 
     await session.refresh(photo)
-    background.add_task(generate_thumbnail, photo.id, photo.object_key)
+    background.add_task(process_photo, photo.id, photo.object_key)
     return to_read(photo)
 
 

@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, Integer, String
+from pgvector.sqlalchemy import Vector
+from sqlalchemy import JSON, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
@@ -22,6 +23,9 @@ class Photo(Base, TimestampMixin):
     size_bytes: Mapped[int] = mapped_column(Integer)
     is_primary: Mapped[bool] = mapped_column(default=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    embedding: Mapped[list[float] | None] = mapped_column(Vector(512))
+    bbox: Mapped[list[float] | None] = mapped_column(JSON)
+    dog_detected: Mapped[bool | None] = mapped_column()
 
     listing: Mapped["Listing"] = relationship(back_populates="photos")
 
