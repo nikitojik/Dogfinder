@@ -10,8 +10,7 @@
             {% if listing.photos|length > 1 %}
             <div class="thumbs">
                 {% for photo in listing.photos %}
-                <img src="{{ photo.thumb_url or photo.url }}"
-                     data-full="{{ photo.url }}" alt="">
+                <img src="{{ photo.thumb_url or photo.url }}" data-full="{{ photo.url }}" alt="">
                 {% endfor %}
             </div>
             {% endif %}
@@ -54,6 +53,19 @@
         {% if listing.description %}
         <p class="description">{{ listing.description }}</p>
         {% endif %}
+
+        {% if user and user.id == listing.owner.id %}
+        <section class="matches-block" data-listing-id="{{ listing.id }}">
+            <h2>Возможные совпадения</h2>
+            <p class="hint-small">
+                Система сравнивает фотографию вашей собаки с объявлениями
+                противоположного типа. Совпадения видите только вы.
+            </p>
+            <div id="matches">
+                <p class="loading">Ищем…</p>
+            </div>
+        </section>
+        {% endif %}
     </div>
 
     <aside class="listing-side">
@@ -65,10 +77,8 @@
         </div>
 
         {% if listing.lat is not none %}
-        <div id="mini-map"
-             data-lat="{{ listing.lat }}"
-             data-lon="{{ listing.lon }}"
-             data-kind="{{ listing.kind.value }}"></div>
+        <div id="mini-map" data-lat="{{ listing.lat }}" data-lon="{{ listing.lon }}"
+            data-kind="{{ listing.kind.value }}"></div>
         {% endif %}
 
         {% if user and user.id != listing.owner.id %}
@@ -76,7 +86,7 @@
             <h3>Видели эту собаку?</h3>
             <form id="respond-form" data-listing-id="{{ listing.id }}">
                 <textarea name="message" rows="4" required minlength="10"
-                          placeholder="Где и когда видели, приметы"></textarea>
+                    placeholder="Где и когда видели, приметы"></textarea>
                 <input type="tel" name="contact_phone" placeholder="Телефон (необязательно)">
                 <p class="error" id="respond-error"></p>
                 <button type="submit">Отправить</button>
@@ -92,4 +102,5 @@
 {% block scripts %}
 <script src="/static/js/map.js"></script>
 <script src="/static/js/listing.js"></script>
+<script src="/static/js/matches.js"></script>
 {% endblock %}
