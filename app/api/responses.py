@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
@@ -6,6 +6,7 @@ from sqlalchemy.orm import selectinload
 from app.api.deps import CurrentUser, SessionDep
 from app.models import Listing, Response
 from app.schemas.response import ResponseCreate, ResponseRead, ResponseStatusUpdate
+from app.services.notification_tasks import notify_new_response
 
 router = APIRouter(tags=["responses"])
 
@@ -16,7 +17,11 @@ router = APIRouter(tags=["responses"])
     status_code=status.HTTP_201_CREATED,
 )
 async def create_response(
-    listing_id: int, data: ResponseCreate, user: CurrentUser, session: SessionDep
+    listing_id: int,
+    data: ResponseCreate,
+    user: CurrentUser,
+    session: SessionDep,
+    background: BackgroundTasks,
 ) -> Response:
     listing = await session.get(Listing, listing_id)
     if listing is None:
@@ -39,6 +44,8 @@ async def create_response(
         raise HTTPException(
             status_code=409, detail="Вы уже откликнулись на это объявление"
         ) from None
+
+    background.add_task(notify_new_response, response.id)
 
     return await session.scalar(
         select(Response).where(Response.id == response.id).options(selectinload(Response.author))

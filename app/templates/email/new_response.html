@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<p style="margin:0 0 16px;">Здравствуйте, {{ owner_name }}!</p>
+
+<p style="margin:0 0 16px;">
+    На ваше объявление
+    <a href="{{ base_url }}/listings/{{ listing.id }}" style="color:#1a1a1a;">{{ listing.title }}</a>
+    откликнулся пользователь {{ author_name }}.
+</p>
+
+<div style="background:#f7f7f7;border-radius:6px;padding:14px;margin:0 0 16px;">
+    <div style="font-size:14px;line-height:1.5;">{{ message }}</div>
+</div>
+
+<p style="margin:0 0 20px;font-size:14px;">
+    Телефон для связи: <a href="tel:{{ phone }}" style="color:#1a1a1a;">{{ phone }}</a>
+</p>
+
+<a href="{{ base_url }}/my"
+   style="display:inline-block;background:#1a1a1a;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;">
+    Посмотреть все отклики
+</a>
+{% endblock %}
