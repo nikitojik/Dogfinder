@@ -19,6 +19,16 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 10080
     ml_lazy_load: bool = False
 
+    smtp_host: str = "localhost"
+    smtp_port: int = 1025
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = "DogFinder <noreply@dogfinder.local>"
+    smtp_tls: bool = False
+
+    base_url: str = "http://localhost:8000"
+    notifications_enabled: bool = True
+
 
 @lru_cache
 def get_settings() -> Settings:
