@@ -1,30 +1,30 @@
 {% extends "base.html" %}
-{% block title %}Регистрация — DogFinder{% endblock %}
+{% block title %}{{ _("Sign up") }} — DogFinder{% endblock %}
 
 {% block content %}
 <div class="form-page">
-    <h1>Регистрация</h1>
+    <h1>{{ _("Sign up") }}</h1>
     <form id="register-form">
         <label>
-            Имя
+            {{ _("Name") }}
             <input type="text" name="name" required maxlength="100">
         </label>
         <label>
-            Email
+            {{ _("Email") }}
             <input type="email" name="email" required>
         </label>
         <label>
-            Телефон
+            {{ _("Phone") }}
             <input type="tel" name="phone" required placeholder="+7 900 123-45-67">
         </label>
         <label>
-            Пароль
+            {{ _("Password") }}
             <input type="password" name="password" required minlength="8">
         </label>
         <p class="error" id="error"></p>
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit">{{ _("Sign up") }}</button>
     </form>
-    <p class="hint">Уже есть аккаунт? <a href="/login">Войти</a></p>
+    <p class="hint">{{ _("Already have an account?") }} <a href="/login">{{ _("Log in") }}</a></p>
 </div>
 {% endblock %}
 

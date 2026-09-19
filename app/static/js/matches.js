@@ -7,9 +7,9 @@ function escapeText(value) {
 }
 
 function formatDistance(meters) {
-    if (meters === null) return "расстояние неизвестно";
-    if (meters < 1000) return `${meters} м`;
-    return `${(meters / 1000).toFixed(1)} км`;
+    if (meters === null) return window.I18N.unknownDistance;
+    if (meters < 1000) return `${meters} ${window.I18N.m}`;
+    return `${(meters / 1000).toFixed(1)} ${window.I18N.km}`;
 }
 
 function matchCard(match) {
@@ -19,7 +19,7 @@ function matchCard(match) {
         ? `<img src="${photo.thumb_url ?? photo.url}" alt="">`
         : '<div class="match-photo empty"></div>';
 
-    const date = new Date(listing.happened_at).toLocaleDateString("ru-RU");
+    const date = new Date(listing.happened_at).toLocaleDateString(window.I18N.localeTag);
     const percent = Math.round(match.visual_similarity * 100);
 
     return `
@@ -30,7 +30,7 @@ function matchCard(match) {
                 <div class="match-meta">${date} · ${formatDistance(match.distance_m)}</div>
                 <div class="match-score">
                     <div class="score-bar"><span style="width:${percent}%"></span></div>
-                    <span class="score-value">сходство ${percent}%</span>
+                    <span class="score-value">${window.I18N.similarity} ${percent}%</span>
                 </div>
             </div>
         </a>
@@ -45,12 +45,12 @@ function matchCard(match) {
 
     const response = await fetch(`/api/listings/${listingId}/matches`);
     if (!response.ok) {
-        box.innerHTML = '<p class="card-meta">Не удалось загрузить совпадения</p>';
+        box.innerHTML = `<p class="card-meta">${window.I18N.loadMatchesError}</p>`;
         return;
     }
 
     const matches = await response.json();
     box.innerHTML = matches.length
         ? matches.map(matchCard).join("")
-        : '<p class="card-meta">Подходящих объявлений пока не найдено</p>';
+        : `<p class="card-meta">${window.I18N.noMatches}</p>`;
 })();

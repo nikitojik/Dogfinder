@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<p style="margin:0 0 16px;">Здравствуйте, {{ owner_name }}!</p>
+<p style="margin:0 0 16px;">{{ _("Hello, %(name)s!")|format(name=owner_name) }}</p>
 
 <p style="margin:0 0 20px;">
-    По вашему объявлению
-    <a href="{{ base_url }}/listings/{{ listing.id }}" style="color:#1a1a1a;">{{ listing.title }}</a>
-    найдено похожее объявление.
+    {{ _("A similar listing was found for your listing") }}
+    <a href="{{ base_url }}/listings/{{ listing.id }}" style="color:#1a1a1a;">{{ listing.title }}</a>.
 </p>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
@@ -22,18 +21,19 @@
             <div style="font-size:13px;color:#888;margin-bottom:6px;">
                 {{ match.happened_at.strftime("%d.%m.%Y") }}{% if distance %} · {{ distance }}{% endif %}
             </div>
-            <div style="font-size:13px;color:#2e7d32;">Сходство по фотографии: {{ percent }}%</div>
+            <div style="font-size:13px;color:#2e7d32;">
+                {{ _("Photo similarity") }}: {{ percent }}%
+            </div>
         </td>
     </tr>
 </table>
 
 <a href="{{ base_url }}/listings/{{ match.id }}"
    style="display:inline-block;background:#1a1a1a;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;">
-    Открыть объявление
+    {{ _("Open listing") }}
 </a>
 
 <p style="margin:20px 0 0;font-size:13px;color:#888;">
-    Совпадение определено автоматически по фотографии, месту и дате.
-    Проверьте объявление — система может ошибаться.
+    {{ _("The match was determined automatically by photo, location and date. Please check the listing — the system can be wrong.") }}
 </p>
 {% endblock %}

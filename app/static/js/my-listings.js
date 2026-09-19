@@ -1,8 +1,16 @@
 const container = document.getElementById("listings");
 
-const KIND_LABELS = { lost: "Пропала", found: "Найдена" };
-const STATUS_LABELS = { active: "Активно", resolved: "Найдена", archived: "В архиве" };
-const RESPONSE_LABELS = { new: "Новый", accepted: "Принят", rejected: "Отклонён" };
+const KIND_LABELS = { lost: window.I18N.lost, found: window.I18N.found };
+const STATUS_LABELS = {
+    active: window.I18N.statusActive,
+    resolved: window.I18N.statusResolved,
+    archived: window.I18N.statusArchived,
+};
+const RESPONSE_LABELS = {
+    new: window.I18N.statusNew,
+    accepted: window.I18N.statusAccepted,
+    rejected: window.I18N.statusRejected,
+};
 
 function escapeHtml(value) {
     const div = document.createElement("div");
@@ -16,8 +24,12 @@ function listingCard(listing) {
         ? `<img class="card-photo" src="${photo.thumb_url ?? photo.url}" alt="">`
         : '<div class="card-photo empty"></div>';
 
-    const date = new Date(listing.happened_at).toLocaleDateString("ru-RU");
+    const date = new Date(listing.happened_at).toLocaleDateString(window.I18N.localeTag);
     const responses = listing.response_count;
+
+    const buttonLabel = responses > 0
+        ? `${window.I18N.responsesCount} (${responses})`
+        : window.I18N.noResponsesButton;
 
     return `
         <article class="my-card" data-id="${listing.id}">
@@ -30,7 +42,7 @@ function listingCard(listing) {
                 <a class="card-title" href="/listings/${listing.id}">${escapeHtml(listing.title)}</a>
                 <div class="card-meta">${date}</div>
                 <button type="button" class="toggle-responses" data-id="${listing.id}">
-                    ${responses > 0 ? `Отклики (${responses})` : "Откликов нет"}
+                    ${buttonLabel}
                 </button>
                 <div class="responses" id="responses-${listing.id}" hidden></div>
             </div>
@@ -39,7 +51,7 @@ function listingCard(listing) {
 }
 
 function responseItem(item) {
-    const date = new Date(item.created_at).toLocaleDateString("ru-RU");
+    const date = new Date(item.created_at).toLocaleDateString(window.I18N.localeTag);
     const isNew = item.status === "new";
 
     return `
@@ -55,8 +67,8 @@ function responseItem(item) {
             <div class="response-foot">
                 <span class="card-meta">${date}</span>
                 ${isNew ? `
-                    <button type="button" class="set-status" data-id="${item.id}" data-status="accepted">Принять</button>
-                    <button type="button" class="set-status secondary" data-id="${item.id}" data-status="rejected">Отклонить</button>
+                    <button type="button" class="set-status" data-id="${item.id}" data-status="accepted">${window.I18N.accept}</button>
+                    <button type="button" class="set-status secondary" data-id="${item.id}" data-status="rejected">${window.I18N.reject}</button>
                 ` : ""}
             </div>
         </div>
@@ -72,18 +84,18 @@ async function loadResponses(listingId) {
     }
 
     box.hidden = false;
-    box.innerHTML = '<p class="loading">Загружаем…</p>';
+    box.innerHTML = `<p class="loading">${window.I18N.loading}</p>`;
 
     const response = await fetch(`/api/listings/${listingId}/responses`);
     if (!response.ok) {
-        box.innerHTML = '<p class="error">Не удалось загрузить отклики</p>';
+        box.innerHTML = `<p class="error">${window.I18N.loadResponsesError}</p>`;
         return;
     }
 
     const items = await response.json();
     box.innerHTML = items.length
         ? items.map(responseItem).join("")
-        : '<p class="card-meta">Пока никто не откликнулся</p>';
+        : `<p class="card-meta">${window.I18N.noResponses}</p>`;
 }
 
 async function setStatus(responseId, status) {
@@ -115,12 +127,12 @@ container.addEventListener("click", (event) => {
 (async () => {
     const response = await fetch("/api/listings/mine");
     if (!response.ok) {
-        container.innerHTML = '<p class="error">Не удалось загрузить объявления</p>';
+        container.innerHTML = `<p class="error">${window.I18N.loadError}</p>`;
         return;
     }
 
     const items = await response.json();
     container.innerHTML = items.length
         ? items.map(listingCard).join("")
-        : '<p class="card-meta">У вас пока нет объявлений. <a href="/listings/new">Создать</a></p>';
+        : `<p class="card-meta">${window.I18N.noListings} <a href="/listings/new">${window.I18N.createOne}</a></p>`;
 })();

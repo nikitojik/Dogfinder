@@ -1,57 +1,97 @@
 <!DOCTYPE html>
-<html lang="ru">
-
+<html lang="{{ locale }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}DogFinder{% endblock %}</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     {% block head %}{% endblock %}
 </head>
-
 <body>
-    <header class="site-header">
-        <a href="/" class="logo">DogFinder</a>
-        <nav>
-            <a href="/">{{ _("Map") }}</a>
-            <a href="/feed">{{ _("Listings") }}</a>
-            {% if user %}
-            <a href="/listings/new">{{ _("Post a listing") }}</a>
-            <a href="/my">{{ _("My listings") }}</a>
-            <span class="user-name">{{ user.name }}</span>
-            <button type="button" id="logout">{{ _("Log out") }}</button>
+<header class="site-header">
+    <a href="/" class="logo">DogFinder</a>
+    <nav>
+        <a href="/">{{ _("Map") }}</a>
+        <a href="/feed">{{ _("Listings") }}</a>
+        {% if user %}
+        <a href="/listings/new">{{ _("Post a listing") }}</a>
+        <a href="/my">{{ _("My listings") }}</a>
+        <span class="user-name">{{ user.name }}</span>
+        <button type="button" id="logout">{{ _("Log out") }}</button>
+        {% else %}
+        <a href="/login">{{ _("Log in") }}</a>
+        <a href="/register">{{ _("Sign up") }}</a>
+        {% endif %}
+        <span class="lang-switch">
+            {% for code in ["en", "ru"] %}
+            {% if code == locale %}
+            <span class="lang-current">{{ code|upper }}</span>
             {% else %}
-            <a href="/login">{{ _("Log in") }}</a>
-            <a href="/register">{{ _("Sign up") }}</a>
+            <a href="/lang/{{ code }}">{{ code|upper }}</a>
             {% endif %}
-            <span class="lang-switch">
-                {% for code in ["en", "ru"] %}
-                {% if code == locale %}
-                <span class="lang-current">{{ code|upper }}</span>
-                {% else %}
-                <a href="/lang/{{ code }}">{{ code|upper }}</a>
-                {% endif %}
-                {% endfor %}
-            </span>
-        </nav>
-    </header>
+            {% endfor %}
+        </span>
+    </nav>
+</header>
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+<main>
+    {% block content %}{% endblock %}
+</main>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-    <script>
-        document.getElementById("logout")?.addEventListener("click", async () => {
-            await fetch("/api/auth/logout", { method: "POST" });
-            location.href = "/";
-        });
-    </script>
-    {% block scripts %}{% endblock %}
+<script>
+window.I18N = {
+    lost: "{{ _('Lost') }}",
+    found: "{{ _('Found') }}",
+    loading: "{{ _('Loading…') }}",
+    nothingFound: "{{ _('Nothing found') }}",
+    loadError: "{{ _('Failed to load listings') }}",
+    small: "{{ _('small') }}",
+    medium: "{{ _('medium') }}",
+    large: "{{ _('large') }}",
+    similarity: "{{ _('photo similarity') }}",
+    sendError: "{{ _('Failed to send') }}",
+    responseSent: "{{ _('Your message has been sent to the owner') }}",
+    noMatches: "{{ _('No similar listings found yet') }}",
+    loadMatchesError: "{{ _('Failed to load matches') }}",
+    loginError: "{{ _('Could not log in') }}",
+    registerError: "{{ _('Please check the form fields') }}",
+    noResponses: "{{ _('No responses yet') }}",
+    responsesCount: "{{ _('Responses') }}",
+    noResponsesButton: "{{ _('No responses') }}",
+    statusNew: "{{ _('New') }}",
+    statusAccepted: "{{ _('Accepted') }}",
+    statusRejected: "{{ _('Rejected') }}",
+    statusActive: "{{ _('Active') }}",
+    statusResolved: "{{ _('Resolved') }}",
+    statusArchived: "{{ _('Archived') }}",
+    accept: "{{ _('Accept') }}",
+    reject: "{{ _('Reject') }}",
+    noListings: "{{ _('You have no listings yet.') }}",
+    createOne: "{{ _('Create one') }}",
+    loadResponsesError: "{{ _('Failed to load responses') }}",
+    addressNotFound: "{{ _('Address not found, place the pin manually') }}",
+    selected: "{{ _('Selected') }}",
+    publishing: "{{ _('Publishing…') }}",
+    uploadingPhotos: "{{ _('Uploading photos…') }}",
+    publish: "{{ _('Publish') }}",
+    formError: "{{ _('Please check the form fields') }}",
+    unknownDistance: "{{ _('distance unknown') }}",
+    km: "{{ _('km') }}",
+    m: "{{ _('m') }}",
+    localeTag: "{{ 'ru-RU' if locale == 'ru' else 'en-GB' }}",
+};
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+document.getElementById("logout")?.addEventListener("click", async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    location.href = "/";
+});
+</script>
+{% block scripts %}{% endblock %}
 </body>
-
 </html>

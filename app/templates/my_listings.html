@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Мои объявления — DogFinder{% endblock %}
+{% block title %}{{ _("My listings") }} — DogFinder{% endblock %}
 
 {% block content %}
 <div class="my-page">
-    <h1>Мои объявления</h1>
+    <h1>{{ _("My listings") }}</h1>
     <div id="listings" class="my-list">
-        <p class="loading">Загружаем…</p>
+        <p class="loading">{{ _("Loading…") }}</p>
     </div>
 </div>
 {% endblock %}

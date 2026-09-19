@@ -1,14 +1,13 @@
-Здравствуйте, {{ owner_name }}!
+{{ _("Hello, %(name)s!")|format(name=owner_name) }}
 
-На ваше объявление "{{ listing.title }}" откликнулся пользователь {{ author_name }}.
+{{ _("Someone responded to your listing") }} "{{ listing.title }}".
 
-Сообщение:
 {{ message }}
 
-Телефон для связи: {{ phone }}
+{{ _("From") }}: {{ author_name }} · {{ phone }}
 
-Объявление: {{ base_url }}/listings/{{ listing.id }}
-Все отклики: {{ base_url }}/my
+{{ base_url }}/listings/{{ listing.id }}
+{{ base_url }}/my
 
 ---
-Это письмо отправлено автоматически, отвечать на него не нужно.
+{{ _("This is an automated message, no reply is needed.") }}

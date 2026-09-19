@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-09-19 19:15-0400\n"
+"POT-Creation-Date: 2026-09-19 19:27-0400\n"
 "PO-Revision-Date: 2026-09-19 19:15-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,30 +18,439 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: app/templates/base.html:19
+#: app/templates/base.html:17
 msgid "Map"
 msgstr ""
 
-#: app/templates/base.html:20
+#: app/templates/base.html:18 app/templates/feed.html:2
+#: app/templates/feed.html:6
 msgid "Listings"
 msgstr ""
 
-#: app/templates/base.html:22
+#: app/templates/base.html:20
 msgid "Post a listing"
 msgstr ""
 
-#: app/templates/base.html:23
+#: app/templates/base.html:21 app/templates/my_listings.html:2
+#: app/templates/my_listings.html:6
 msgid "My listings"
 msgstr ""
 
-#: app/templates/base.html:25
+#: app/templates/base.html:23
 msgid "Log out"
 msgstr ""
 
-#: app/templates/base.html:27
+#: app/templates/base.html:25 app/templates/listing.html:97
+#: app/templates/login.html:2 app/templates/login.html:6
+#: app/templates/login.html:17 app/templates/register.html:27
 msgid "Log in"
 msgstr ""
 
-#: app/templates/base.html:28
+#: app/templates/base.html:26 app/templates/login.html:19
+#: app/templates/register.html:2 app/templates/register.html:6
+#: app/templates/register.html:25
 msgid "Sign up"
+msgstr ""
+
+#: app/templates/base.html:46 app/templates/feed.html:11
+#: app/templates/index.html:6 app/templates/listing.html:23
+msgid "Lost"
+msgstr ""
+
+#: app/templates/base.html:47 app/templates/feed.html:12
+#: app/templates/index.html:7 app/templates/listing.html:23
+msgid "Found"
+msgstr ""
+
+#: app/templates/base.html:48 app/templates/feed.html:37
+#: app/templates/my_listings.html:8
+msgid "Loading…"
+msgstr ""
+
+#: app/templates/base.html:49
+msgid "Nothing found"
+msgstr ""
+
+#: app/templates/base.html:50
+msgid "Failed to load listings"
+msgstr ""
+
+#: app/templates/base.html:51
+msgid "small"
+msgstr ""
+
+#: app/templates/base.html:52
+msgid "medium"
+msgstr ""
+
+#: app/templates/base.html:53
+msgid "large"
+msgstr ""
+
+#: app/templates/base.html:54
+msgid "photo similarity"
+msgstr ""
+
+#: app/templates/base.html:55
+msgid "Failed to send"
+msgstr ""
+
+#: app/templates/base.html:56
+msgid "Your message has been sent to the owner"
+msgstr ""
+
+#: app/templates/base.html:57
+msgid "No similar listings found yet"
+msgstr ""
+
+#: app/templates/base.html:58
+msgid "Failed to load matches"
+msgstr ""
+
+#: app/templates/base.html:59
+msgid "Could not log in"
+msgstr ""
+
+#: app/templates/base.html:60 app/templates/base.html:80
+msgid "Please check the form fields"
+msgstr ""
+
+#: app/templates/base.html:61
+msgid "No responses yet"
+msgstr ""
+
+#: app/templates/base.html:62
+msgid "Responses"
+msgstr ""
+
+#: app/templates/base.html:63
+msgid "No responses"
+msgstr ""
+
+#: app/templates/base.html:64
+msgid "New"
+msgstr ""
+
+#: app/templates/base.html:65
+msgid "Accepted"
+msgstr ""
+
+#: app/templates/base.html:66
+msgid "Rejected"
+msgstr ""
+
+#: app/templates/base.html:67
+msgid "Active"
+msgstr ""
+
+#: app/templates/base.html:68
+msgid "Resolved"
+msgstr ""
+
+#: app/templates/base.html:69
+msgid "Archived"
+msgstr ""
+
+#: app/templates/base.html:70
+msgid "Accept"
+msgstr ""
+
+#: app/templates/base.html:71
+msgid "Reject"
+msgstr ""
+
+#: app/templates/base.html:72
+msgid "You have no listings yet."
+msgstr ""
+
+#: app/templates/base.html:73
+msgid "Create one"
+msgstr ""
+
+#: app/templates/base.html:74
+msgid "Failed to load responses"
+msgstr ""
+
+#: app/templates/base.html:75
+msgid "Address not found, place the pin manually"
+msgstr ""
+
+#: app/templates/base.html:76
+msgid "Selected"
+msgstr ""
+
+#: app/templates/base.html:77
+msgid "Publishing…"
+msgstr ""
+
+#: app/templates/base.html:78
+msgid "Uploading photos…"
+msgstr ""
+
+#: app/templates/base.html:79 app/templates/listing_new.html:99
+msgid "Publish"
+msgstr ""
+
+#: app/templates/base.html:81
+msgid "distance unknown"
+msgstr ""
+
+#: app/templates/base.html:82
+msgid "km"
+msgstr ""
+
+#: app/templates/base.html:83
+msgid "m"
+msgstr ""
+
+#: app/templates/feed.html:10
+msgid "All"
+msgstr ""
+
+#: app/templates/feed.html:17 app/templates/listing.html:32
+#: app/templates/listing_new.html:39
+msgid "Breed"
+msgstr ""
+
+#: app/templates/feed.html:18 app/templates/feed.html:23
+msgid "Any"
+msgstr ""
+
+#: app/templates/feed.html:21 app/templates/listing.html:42
+#: app/templates/listing_new.html:50
+msgid "Size"
+msgstr ""
+
+#: app/templates/feed.html:24 app/templates/listing.html:4
+msgid "Small"
+msgstr ""
+
+#: app/templates/feed.html:25 app/templates/listing.html:4
+msgid "Medium"
+msgstr ""
+
+#: app/templates/feed.html:26 app/templates/listing.html:4
+msgid "Large"
+msgstr ""
+
+#: app/templates/feed.html:30
+msgid "Not earlier than"
+msgstr ""
+
+#: app/templates/feed.html:41
+msgid "Show more"
+msgstr ""
+
+#: app/templates/listing.html:28
+msgid "Date"
+msgstr ""
+
+#: app/templates/listing.html:37 app/templates/listing_new.html:43
+msgid "Colour"
+msgstr ""
+
+#: app/templates/listing.html:50 app/templates/listing_new.html:59
+msgid "Sex"
+msgstr ""
+
+#: app/templates/listing.html:51 app/templates/listing_new.html:62
+msgid "Male"
+msgstr ""
+
+#: app/templates/listing.html:51 app/templates/listing_new.html:63
+msgid "Female"
+msgstr ""
+
+#: app/templates/listing.html:61
+msgid "Possible matches"
+msgstr ""
+
+#: app/templates/listing.html:63
+msgid ""
+"The system compares your photo with listings of the opposite type. Only "
+"you can see these matches."
+msgstr ""
+
+#: app/templates/listing.html:66
+msgid "Searching…"
+msgstr ""
+
+#: app/templates/listing.html:87
+msgid "Have you seen this dog?"
+msgstr ""
+
+#: app/templates/listing.html:90
+msgid "Where and when you saw it, any details"
+msgstr ""
+
+#: app/templates/listing.html:91
+msgid "Phone (optional)"
+msgstr ""
+
+#: app/templates/listing.html:93
+msgid "Send"
+msgstr ""
+
+#: app/templates/listing.html:97
+msgid "to respond"
+msgstr ""
+
+#: app/templates/listing_new.html:2 app/templates/listing_new.html:6
+msgid "New listing"
+msgstr ""
+
+#: app/templates/listing_new.html:12
+msgid "I lost a dog"
+msgstr ""
+
+#: app/templates/listing_new.html:16
+msgid "I found a dog"
+msgstr ""
+
+#: app/templates/listing_new.html:21
+msgid "Title"
+msgstr ""
+
+#: app/templates/listing_new.html:23
+msgid "Lost a ginger corgi near the station"
+msgstr ""
+
+#: app/templates/listing_new.html:27
+msgid "When it happened"
+msgstr ""
+
+#: app/templates/listing_new.html:32
+msgid "Description"
+msgstr ""
+
+#: app/templates/listing_new.html:34
+msgid "Distinguishing marks, circumstances, behaviour"
+msgstr ""
+
+#: app/templates/listing_new.html:52
+msgid "Not specified"
+msgstr ""
+
+#: app/templates/listing_new.html:53
+msgid "Small, under 35 cm"
+msgstr ""
+
+#: app/templates/listing_new.html:54
+msgid "Medium, 35–55 cm"
+msgstr ""
+
+#: app/templates/listing_new.html:55
+msgid "Large, over 55 cm"
+msgstr ""
+
+#: app/templates/listing_new.html:61
+msgid "Unknown"
+msgstr ""
+
+#: app/templates/listing_new.html:69
+msgid "Size note"
+msgstr ""
+
+#: app/templates/listing_new.html:71
+msgid "A puppy, but with large paws"
+msgstr ""
+
+#: app/templates/listing_new.html:75
+msgid "Location"
+msgstr ""
+
+#: app/templates/listing_new.html:77
+msgid "Street, building or landmark"
+msgstr ""
+
+#: app/templates/listing_new.html:78
+msgid "Find"
+msgstr ""
+
+#: app/templates/listing_new.html:80
+msgid "Or click the map to place a pin"
+msgstr ""
+
+#: app/templates/listing_new.html:86
+msgid "Photos"
+msgstr ""
+
+#: app/templates/listing_new.html:89
+msgid "Up to 8 photos, 10 MB each"
+msgstr ""
+
+#: app/templates/listing_new.html:93
+msgid "Contact phone"
+msgstr ""
+
+#: app/templates/listing_new.html:95
+msgid "Leave empty to use your profile phone"
+msgstr ""
+
+#: app/templates/login.html:9 app/templates/register.html:13
+msgid "Email"
+msgstr ""
+
+#: app/templates/login.html:13 app/templates/register.html:21
+msgid "Password"
+msgstr ""
+
+#: app/templates/login.html:19
+msgid "No account yet?"
+msgstr ""
+
+#: app/templates/register.html:9
+msgid "Name"
+msgstr ""
+
+#: app/templates/register.html:17
+msgid "Phone"
+msgstr ""
+
+#: app/templates/register.html:27
+msgid "Already have an account?"
+msgstr ""
+
+#: app/templates/email/base.html:12 app/templates/email/new_match.txt:14
+#: app/templates/email/new_response.txt:13
+msgid "This is an automated message, no reply is needed."
+msgstr ""
+
+#: app/templates/email/new_match.html:3 app/templates/email/new_match.txt:1
+#: app/templates/email/new_response.html:3
+#: app/templates/email/new_response.txt:1
+#, python-format
+msgid "Hello, %(name)s!"
+msgstr ""
+
+#: app/templates/email/new_match.html:6 app/templates/email/new_match.txt:3
+msgid "A similar listing was found for your listing"
+msgstr ""
+
+#: app/templates/email/new_match.html:25 app/templates/email/new_match.txt:7
+msgid "Photo similarity"
+msgstr ""
+
+#: app/templates/email/new_match.html:33
+msgid "Open listing"
+msgstr ""
+
+#: app/templates/email/new_match.html:37 app/templates/email/new_match.txt:11
+msgid ""
+"The match was determined automatically by photo, location and date. "
+"Please check the listing — the system can be wrong."
+msgstr ""
+
+#: app/templates/email/new_response.html:6
+#: app/templates/email/new_response.txt:3
+msgid "Someone responded to your listing"
+msgstr ""
+
+#: app/templates/email/new_response.html:15
+#: app/templates/email/new_response.txt:7
+msgid "From"
+msgstr ""
+
+#: app/templates/email/new_response.html:21
+msgid "View all responses"
 msgstr ""

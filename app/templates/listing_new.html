@@ -1,102 +1,102 @@
 {% extends "base.html" %}
-{% block title %}Новое объявление — DogFinder{% endblock %}
+{% block title %}{{ _("New listing") }} — DogFinder{% endblock %}
 
 {% block content %}
 <div class="create-page">
-    <h1>Новое объявление</h1>
+    <h1>{{ _("New listing") }}</h1>
 
     <form id="listing-form">
         <div class="kind-choice">
             <label>
                 <input type="radio" name="kind" value="lost" checked>
-                <span>Пропала собака</span>
+                <span>{{ _("I lost a dog") }}</span>
             </label>
             <label>
                 <input type="radio" name="kind" value="found">
-                <span>Нашёл собаку</span>
+                <span>{{ _("I found a dog") }}</span>
             </label>
         </div>
 
         <label>
-            Заголовок
+            {{ _("Title") }}
             <input type="text" name="title" required minlength="3" maxlength="120"
-                   placeholder="Пропал рыжий корги у вокзала">
+                   placeholder="{{ _('Lost a ginger corgi near the station') }}">
         </label>
 
         <label>
-            Когда это произошло
+            {{ _("When it happened") }}
             <input type="datetime-local" name="happened_at" required>
         </label>
 
         <label>
-            Описание
+            {{ _("Description") }}
             <textarea name="description" rows="4" maxlength="2000"
-                      placeholder="Приметы, обстоятельства, поведение"></textarea>
+                      placeholder="{{ _('Distinguishing marks, circumstances, behaviour') }}"></textarea>
         </label>
 
         <div class="row">
             <label>
-                Порода
+                {{ _("Breed") }}
                 <input type="text" name="breed" maxlength="60">
             </label>
             <label>
-                Окрас
+                {{ _("Colour") }}
                 <input type="text" name="color" maxlength="60">
             </label>
         </div>
 
         <div class="row">
             <label>
-                Размер
+                {{ _("Size") }}
                 <select name="size">
-                    <option value="">Не указан</option>
-                    <option value="small">Мелкая, до 35 см</option>
-                    <option value="medium">Средняя, 35–55 см</option>
-                    <option value="large">Крупная, выше 55 см</option>
+                    <option value="">{{ _("Not specified") }}</option>
+                    <option value="small">{{ _("Small, under 35 cm") }}</option>
+                    <option value="medium">{{ _("Medium, 35–55 cm") }}</option>
+                    <option value="large">{{ _("Large, over 55 cm") }}</option>
                 </select>
             </label>
             <label>
-                Пол
+                {{ _("Sex") }}
                 <select name="sex">
-                    <option value="unknown">Неизвестен</option>
-                    <option value="male">Кобель</option>
-                    <option value="female">Сука</option>
+                    <option value="unknown">{{ _("Unknown") }}</option>
+                    <option value="male">{{ _("Male") }}</option>
+                    <option value="female">{{ _("Female") }}</option>
                 </select>
             </label>
         </div>
 
         <label>
-            Уточнение к размеру
+            {{ _("Size note") }}
             <input type="text" name="size_note" maxlength="120"
-                   placeholder="Щенок, но лапы крупные">
+                   placeholder="{{ _('A puppy, but with large paws') }}">
         </label>
 
         <fieldset class="location-block">
-            <legend>Место</legend>
+            <legend>{{ _("Location") }}</legend>
             <div class="address-search">
-                <input type="text" id="address" placeholder="Улица, дом или ориентир">
-                <button type="button" id="find-address">Найти</button>
+                <input type="text" id="address" placeholder="{{ _('Street, building or landmark') }}">
+                <button type="button" id="find-address">{{ _("Find") }}</button>
             </div>
-            <p class="hint-small">Или кликните по карте, чтобы поставить точку</p>
+            <p class="hint-small">{{ _("Or click the map to place a pin") }}</p>
             <div id="picker-map"></div>
             <p class="coords" id="coords"></p>
         </fieldset>
 
         <fieldset class="photos-block">
-            <legend>Фотографии</legend>
+            <legend>{{ _("Photos") }}</legend>
             <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple>
             <div class="photo-preview" id="photo-preview"></div>
-            <p class="hint-small">До 8 фотографий, каждая не больше 10 МБ</p>
+            <p class="hint-small">{{ _("Up to 8 photos, 10 MB each") }}</p>
         </fieldset>
 
         <label>
-            Телефон для связи
+            {{ _("Contact phone") }}
             <input type="tel" name="contact_phone" maxlength="20"
-                   placeholder="Оставьте пустым, чтобы использовать телефон профиля">
+                   placeholder="{{ _('Leave empty to use your profile phone') }}">
         </label>
 
         <p class="error" id="error"></p>
-        <button type="submit" id="submit-btn">Опубликовать</button>
+        <button type="submit" id="submit-btn">{{ _("Publish") }}</button>
     </form>
 </div>
 {% endblock %}

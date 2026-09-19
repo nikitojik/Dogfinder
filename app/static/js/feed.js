@@ -9,8 +9,12 @@ let offset = 0;
 let total = 0;
 let loading = false;
 
-const KIND_LABELS = { lost: "Пропала", found: "Найдена" };
-const SIZE_LABELS = { small: "мелкая", medium: "средняя", large: "крупная" };
+const KIND_LABELS = { lost: window.I18N.lost, found: window.I18N.found };
+const SIZE_LABELS = {
+    small: window.I18N.small,
+    medium: window.I18N.medium,
+    large: window.I18N.large,
+};
 
 function escapeText(value) {
     const div = document.createElement("div");
@@ -34,7 +38,7 @@ function listingCard(listing) {
         ? `<img src="${photo.thumb_url ?? photo.url}" alt="">`
         : '<div class="feed-photo empty"></div>';
 
-    const date = new Date(listing.happened_at).toLocaleDateString("ru-RU");
+    const date = new Date(listing.happened_at).toLocaleDateString(window.I18N.localeTag);
 
     const details = [listing.breed, listing.color, SIZE_LABELS[listing.size]]
         .filter(Boolean)
@@ -59,7 +63,7 @@ async function load(reset) {
 
     if (reset) {
         offset = 0;
-        listBox.innerHTML = '<p class="loading">Загружаем…</p>';
+        listBox.innerHTML = `<p class="loading">${window.I18N.loading}</p>`;
     }
 
     const params = currentFilters();
@@ -67,7 +71,7 @@ async function load(reset) {
 
     const response = await fetch(`/api/listings?${params}`);
     if (!response.ok) {
-        listBox.innerHTML = '<p class="card-meta">Не удалось загрузить объявления</p>';
+        listBox.innerHTML = `<p class="card-meta">${window.I18N.loadError}</p>`;
         loading = false;
         return;
     }
@@ -77,7 +81,7 @@ async function load(reset) {
 
     const html = data.items.map(listingCard).join("");
     if (reset) {
-        listBox.innerHTML = html || '<p class="card-meta">Ничего не найдено</p>';
+        listBox.innerHTML = html || `<p class="card-meta">${window.I18N.nothingFound}</p>`;
     } else {
         listBox.insertAdjacentHTML("beforeend", html);
     }

@@ -37,11 +37,11 @@ respondForm?.addEventListener("submit", async (event) => {
     });
 
     if (response.ok) {
-        respondForm.outerHTML =
-            '<p class="success">Отклик отправлен, владелец получит ваше сообщение</p>';
+        respondForm.outerHTML = `<p class="success">${window.I18N.responseSent}</p>`;
         return;
     }
 
     const body = await response.json();
-    error.textContent = typeof body.detail === "string" ? body.detail : "Не удалось отправить";
+    error.textContent =
+        typeof body.detail === "string" ? body.detail : window.I18N.sendError;
 });

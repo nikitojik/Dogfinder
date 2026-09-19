@@ -1,44 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Объявления — DogFinder{% endblock %}
+{% block title %}{{ _("Listings") }} — DogFinder{% endblock %}
 
 {% block content %}
 <div class="feed-page">
-    <h1>Объявления</h1>
+    <h1>{{ _("Listings") }}</h1>
 
     <form id="filters" class="filters">
         <div class="filter-tabs">
-            <label><input type="radio" name="kind" value="" checked><span>Все</span></label>
-            <label><input type="radio" name="kind" value="lost"><span>Пропали</span></label>
-            <label><input type="radio" name="kind" value="found"><span>Найдены</span></label>
+            <label><input type="radio" name="kind" value="" checked><span>{{ _("All") }}</span></label>
+            <label><input type="radio" name="kind" value="lost"><span>{{ _("Lost") }}</span></label>
+            <label><input type="radio" name="kind" value="found"><span>{{ _("Found") }}</span></label>
         </div>
 
         <div class="filter-row">
             <label>
-                Порода
-                <input type="text" name="breed" placeholder="Любая">
+                {{ _("Breed") }}
+                <input type="text" name="breed" placeholder="{{ _('Any') }}">
             </label>
             <label>
-                Размер
+                {{ _("Size") }}
                 <select name="size">
-                    <option value="">Любой</option>
-                    <option value="small">Мелкая</option>
-                    <option value="medium">Средняя</option>
-                    <option value="large">Крупная</option>
+                    <option value="">{{ _("Any") }}</option>
+                    <option value="small">{{ _("Small") }}</option>
+                    <option value="medium">{{ _("Medium") }}</option>
+                    <option value="large">{{ _("Large") }}</option>
                 </select>
             </label>
             <label>
-                Не раньше
+                {{ _("Not earlier than") }}
                 <input type="date" name="since">
             </label>
         </div>
     </form>
 
     <div id="feed-list" class="feed-list">
-        <p class="loading">Загружаем…</p>
+        <p class="loading">{{ _("Loading…") }}</p>
     </div>
 
     <div id="feed-more" class="feed-more" hidden>
-        <button type="button" id="load-more">Показать ещё</button>
+        <button type="button" id="load-more">{{ _("Show more") }}</button>
     </div>
 </div>
 {% endblock %}

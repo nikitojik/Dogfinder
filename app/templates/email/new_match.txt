@@ -1,15 +1,14 @@
-Здравствуйте, {{ owner_name }}!
+{{ _("Hello, %(name)s!")|format(name=owner_name) }}
 
-По вашему объявлению "{{ listing.title }}" найдено похожее объявление.
+{{ _("A similar listing was found for your listing") }} "{{ listing.title }}".
 
 {{ match.title }}
 {{ match.happened_at.strftime("%d.%m.%Y") }}{% if distance %} · {{ distance }}{% endif %}
-Сходство по фотографии: {{ percent }}%
+{{ _("Photo similarity") }}: {{ percent }}%
 
-Открыть: {{ base_url }}/listings/{{ match.id }}
+{{ base_url }}/listings/{{ match.id }}
 
-Совпадение определено автоматически по фотографии, месту и дате.
-Проверьте объявление — система может ошибаться.
+{{ _("The match was determined automatically by photo, location and date. Please check the listing — the system can be wrong.") }}
 
 ---
-Это письмо отправлено автоматически, отвечать на него не нужно.
+{{ _("This is an automated message, no reply is needed.") }}

@@ -8,6 +8,7 @@ let marker = null;
 const pendingFiles = [];
 
 const pickerMap = createMap("picker-map");
+setTimeout(() => pickerMap.invalidateSize(), 100);
 
 function setPoint(lat, lon, zoom) {
     selectedPoint = { lat, lon };
@@ -19,7 +20,7 @@ function setPoint(lat, lon, zoom) {
     if (zoom) {
         pickerMap.setView([lat, lon], zoom);
     }
-    coordsEl.textContent = `Выбрано: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+    coordsEl.textContent = `${window.I18N.selected}: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
 }
 
 pickerMap.on("click", (event) => {
@@ -32,7 +33,7 @@ document.getElementById("find-address").addEventListener("click", async () => {
 
     const response = await fetch(`/api/listings/geocode?q=${encodeURIComponent(query)}`);
     if (!response.ok) {
-        coordsEl.textContent = "Адрес не найден, поставьте точку вручную";
+        coordsEl.textContent = window.I18N.addressNotFound;
         return;
     }
     const data = await response.json();
@@ -82,7 +83,7 @@ form.addEventListener("submit", async (event) => {
     event.preventDefault();
     errorEl.textContent = "";
     submitBtn.disabled = true;
-    submitBtn.textContent = "Публикуем…";
+    submitBtn.textContent = window.I18N.publishing;
 
     const raw = Object.fromEntries(new FormData(form));
 
@@ -111,16 +112,16 @@ form.addEventListener("submit", async (event) => {
     if (!response.ok) {
         const body = await response.json();
         errorEl.textContent =
-            typeof body.detail === "string" ? body.detail : "Проверьте заполнение полей";
+            typeof body.detail === "string" ? body.detail : window.I18N.formError;
         submitBtn.disabled = false;
-        submitBtn.textContent = "Опубликовать";
+        submitBtn.textContent = window.I18N.publish;
         return;
     }
 
     const listing = await response.json();
 
     for (const file of pendingFiles) {
-        submitBtn.textContent = "Загружаем фото…";
+        submitBtn.textContent = window.I18N.uploadingPhotos;
         await uploadPhoto(listing.id, file);
     }
 

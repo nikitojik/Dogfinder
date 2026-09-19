@@ -25,7 +25,7 @@ loginForm?.addEventListener("submit", async (event) => {
         location.href = "/";
         return;
     }
-    showError(error, await response.json(), "Не удалось войти");
+    showError(error, await response.json(), window.I18N.loginError);
 });
 
 registerForm?.addEventListener("submit", async (event) => {
@@ -37,7 +37,7 @@ registerForm?.addEventListener("submit", async (event) => {
     const response = await submitJson("/api/auth/register", data);
 
     if (!response.ok) {
-        showError(error, await response.json(), "Проверьте правильность заполнения полей");
+        showError(error, await response.json(), window.I18N.registerError);
         return;
     }
 

@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Вход — DogFinder{% endblock %}
+{% block title %}{{ _("Log in") }} — DogFinder{% endblock %}
 
 {% block content %}
 <div class="form-page">
-    <h1>Вход</h1>
+    <h1>{{ _("Log in") }}</h1>
     <form id="login-form">
         <label>
-            Email
+            {{ _("Email") }}
             <input type="email" name="email" required>
         </label>
         <label>
-            Пароль
+            {{ _("Password") }}
             <input type="password" name="password" required minlength="8">
         </label>
         <p class="error" id="error"></p>
-        <button type="submit">Войти</button>
+        <button type="submit">{{ _("Log in") }}</button>
     </form>
-    <p class="hint">Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+    <p class="hint">{{ _("No account yet?") }} <a href="/register">{{ _("Sign up") }}</a></p>
 </div>
 {% endblock %}
 

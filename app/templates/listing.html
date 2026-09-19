@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{ listing.title }} — DogFinder{% endblock %}
 
+{% set size_labels = {"small": _("Small"), "medium": _("Medium"), "large": _("Large")} %}
+
 {% block content %}
 <div class="listing-page">
     <div class="listing-main">
@@ -18,35 +20,35 @@
         {% endif %}
 
         <span class="badge {{ listing.kind.value }}">
-            {{ "Пропала" if listing.kind.value == "lost" else "Найдена" }}
+            {{ _("Lost") if listing.kind.value == "lost" else _("Found") }}
         </span>
         <h1>{{ listing.title }}</h1>
 
         <dl class="props">
-            <dt>Дата</dt>
+            <dt>{{ _("Date") }}</dt>
             <dd>{{ listing.happened_at.strftime("%d.%m.%Y") }}</dd>
 
             {% if listing.breed %}
-            <dt>Порода</dt>
+            <dt>{{ _("Breed") }}</dt>
             <dd>{{ listing.breed }}</dd>
             {% endif %}
 
             {% if listing.color %}
-            <dt>Окрас</dt>
+            <dt>{{ _("Colour") }}</dt>
             <dd>{{ listing.color }}</dd>
             {% endif %}
 
             {% if listing.size %}
-            <dt>Размер</dt>
+            <dt>{{ _("Size") }}</dt>
             <dd>
-                {{ {"small": "Мелкая", "medium": "Средняя", "large": "Крупная"}[listing.size.value] }}
+                {{ size_labels[listing.size.value] }}
                 {% if listing.size_note %}<span class="note">{{ listing.size_note }}</span>{% endif %}
             </dd>
             {% endif %}
 
             {% if listing.sex.value != "unknown" %}
-            <dt>Пол</dt>
-            <dd>{{ "Кобель" if listing.sex.value == "male" else "Сука" }}</dd>
+            <dt>{{ _("Sex") }}</dt>
+            <dd>{{ _("Male") if listing.sex.value == "male" else _("Female") }}</dd>
             {% endif %}
         </dl>
 
@@ -56,13 +58,12 @@
 
         {% if user and user.id == listing.owner.id %}
         <section class="matches-block" data-listing-id="{{ listing.id }}">
-            <h2>Возможные совпадения</h2>
+            <h2>{{ _("Possible matches") }}</h2>
             <p class="hint-small">
-                Система сравнивает фотографию вашей собаки с объявлениями
-                противоположного типа. Совпадения видите только вы.
+                {{ _("The system compares your photo with listings of the opposite type. Only you can see these matches.") }}
             </p>
             <div id="matches">
-                <p class="loading">Ищем…</p>
+                <p class="loading">{{ _("Searching…") }}</p>
             </div>
         </section>
         {% endif %}
@@ -83,17 +84,17 @@
 
         {% if user and user.id != listing.owner.id %}
         <div class="respond-card">
-            <h3>Видели эту собаку?</h3>
+            <h3>{{ _("Have you seen this dog?") }}</h3>
             <form id="respond-form" data-listing-id="{{ listing.id }}">
                 <textarea name="message" rows="4" required minlength="10"
-                    placeholder="Где и когда видели, приметы"></textarea>
-                <input type="tel" name="contact_phone" placeholder="Телефон (необязательно)">
+                    placeholder="{{ _('Where and when you saw it, any details') }}"></textarea>
+                <input type="tel" name="contact_phone" placeholder="{{ _('Phone (optional)') }}">
                 <p class="error" id="respond-error"></p>
-                <button type="submit">Отправить</button>
+                <button type="submit">{{ _("Send") }}</button>
             </form>
         </div>
         {% elif not user %}
-        <p class="hint"><a href="/login">Войдите</a>, чтобы откликнуться</p>
+        <p class="hint"><a href="/login">{{ _("Log in") }}</a> {{ _("to respond") }}</p>
         {% endif %}
     </aside>
 </div>

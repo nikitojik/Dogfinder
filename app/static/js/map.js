@@ -25,11 +25,9 @@ function markerIcon(kind) {
 
 function popupHtml(listing) {
     const photo = listing.photos.find((p) => p.is_primary) ?? listing.photos[0];
-    const image = photo
-        ? `<img src="${photo.thumb_url ?? photo.url}" alt="">`
-        : "";
-    const label = listing.kind === "lost" ? "Пропала" : "Найдена";
-    const date = new Date(listing.happened_at).toLocaleDateString("ru-RU");
+    const image = photo ? `<img src="${photo.thumb_url ?? photo.url}" alt="">` : "";
+    const label = listing.kind === "lost" ? window.I18N.lost : window.I18N.found;
+    const date = new Date(listing.happened_at).toLocaleDateString(window.I18N.localeTag);
 
     return `
         <div class="popup">
@@ -51,7 +49,7 @@ async function loadListings(params = {}) {
     const query = new URLSearchParams({ limit: "100", ...params });
     const response = await fetch(`/api/listings?${query}`);
     if (!response.ok) {
-        console.error("Не удалось загрузить объявления");
+        console.error("Failed to load listings");
         return [];
     }
     const data = await response.json();

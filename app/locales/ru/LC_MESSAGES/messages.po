@@ -1,14 +1,10 @@
-# Russian translations for PROJECT.
-# Copyright (C) 2026 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
-#
+
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version: DogFinder 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-09-19 19:15-0400\n"
-"PO-Revision-Date: 2026-09-19 19:15-0400\n"
+"POT-Creation-Date: 2026-09-19 19:27-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -19,23 +15,453 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
+# Навигация
+#: app/templates/base.html:17
 msgid "Map"
 msgstr "Карта"
 
+#: app/templates/base.html:18 app/templates/feed.html:2
+#: app/templates/feed.html:6
 msgid "Listings"
 msgstr "Объявления"
 
+#: app/templates/base.html:20
 msgid "Post a listing"
 msgstr "Разместить объявление"
 
+#: app/templates/base.html:21 app/templates/my_listings.html:2
+#: app/templates/my_listings.html:6
 msgid "My listings"
 msgstr "Мои объявления"
 
+#: app/templates/base.html:23
 msgid "Log out"
 msgstr "Выйти"
 
+#: app/templates/base.html:25 app/templates/listing.html:97
+#: app/templates/login.html:2 app/templates/login.html:6
+#: app/templates/login.html:17 app/templates/register.html:27
 msgid "Log in"
 msgstr "Войти"
 
+#: app/templates/base.html:26 app/templates/login.html:19
+#: app/templates/register.html:2 app/templates/register.html:6
+#: app/templates/register.html:25
 msgid "Sign up"
 msgstr "Регистрация"
+
+# Общее
+#: app/templates/base.html:46 app/templates/feed.html:11
+#: app/templates/index.html:6 app/templates/listing.html:23
+msgid "Lost"
+msgstr "Пропала"
+
+#: app/templates/base.html:47 app/templates/feed.html:12
+#: app/templates/index.html:7 app/templates/listing.html:23
+msgid "Found"
+msgstr "Найдена"
+
+#: app/templates/base.html:48 app/templates/feed.html:37
+#: app/templates/my_listings.html:8
+msgid "Loading…"
+msgstr "Загружаем…"
+
+#: app/templates/base.html:49
+msgid "Nothing found"
+msgstr "Ничего не найдено"
+
+#: app/templates/base.html:50
+msgid "Failed to load listings"
+msgstr "Не удалось загрузить объявления"
+
+#: app/templates/base.html:51
+msgid "small"
+msgstr "мелкая"
+
+#: app/templates/base.html:52
+msgid "medium"
+msgstr "средняя"
+
+#: app/templates/base.html:53
+msgid "large"
+msgstr "крупная"
+
+#: app/templates/base.html:54
+msgid "photo similarity"
+msgstr "сходство"
+
+#: app/templates/base.html:55
+msgid "Failed to send"
+msgstr "Не удалось отправить"
+
+#: app/templates/base.html:56
+msgid "Your message has been sent to the owner"
+msgstr "Отклик отправлен, владелец получит ваше сообщение"
+
+#: app/templates/base.html:57
+msgid "No similar listings found yet"
+msgstr "Подходящих объявлений пока не найдено"
+
+#: app/templates/base.html:58
+msgid "Failed to load matches"
+msgstr "Не удалось загрузить совпадения"
+
+#: app/templates/base.html:59
+msgid "Could not log in"
+msgstr "Не удалось войти"
+
+#: app/templates/base.html:60 app/templates/base.html:80
+msgid "Please check the form fields"
+msgstr "Проверьте правильность заполнения полей"
+
+#: app/templates/base.html:61
+msgid "No responses yet"
+msgstr "Пока никто не откликнулся"
+
+#: app/templates/base.html:62
+msgid "Responses"
+msgstr "Отклики"
+
+#: app/templates/base.html:63
+msgid "No responses"
+msgstr "Откликов нет"
+
+# Статусы
+#: app/templates/base.html:64
+msgid "New"
+msgstr "Новый"
+
+#: app/templates/base.html:65
+msgid "Accepted"
+msgstr "Принят"
+
+#: app/templates/base.html:66
+msgid "Rejected"
+msgstr "Отклонён"
+
+#: app/templates/base.html:67
+msgid "Active"
+msgstr "Активно"
+
+#: app/templates/base.html:68
+msgid "Resolved"
+msgstr "Найдена"
+
+#: app/templates/base.html:69
+msgid "Archived"
+msgstr "В архиве"
+
+#: app/templates/base.html:70
+msgid "Accept"
+msgstr "Принять"
+
+#: app/templates/base.html:71
+msgid "Reject"
+msgstr "Отклонить"
+
+# Мои объявления
+#: app/templates/base.html:72
+msgid "You have no listings yet."
+msgstr "У вас пока нет объявлений."
+
+#: app/templates/base.html:73
+msgid "Create one"
+msgstr "Создать"
+
+#: app/templates/base.html:74
+msgid "Failed to load responses"
+msgstr "Не удалось загрузить отклики"
+
+#: app/templates/base.html:75
+msgid "Address not found, place the pin manually"
+msgstr "Адрес не найден, поставьте точку вручную"
+
+#: app/templates/base.html:76
+msgid "Selected"
+msgstr "Выбрано"
+
+#: app/templates/base.html:77
+msgid "Publishing…"
+msgstr "Публикуем…"
+
+#: app/templates/base.html:78
+msgid "Uploading photos…"
+msgstr "Загружаем фото…"
+
+#: app/templates/base.html:79 app/templates/listing_new.html:99
+msgid "Publish"
+msgstr "Опубликовать"
+
+#: app/templates/base.html:81
+msgid "distance unknown"
+msgstr "расстояние неизвестно"
+
+#: app/templates/base.html:82
+msgid "km"
+msgstr "км"
+
+#: app/templates/base.html:83
+msgid "m"
+msgstr "м"
+
+#: app/templates/feed.html:10
+msgid "All"
+msgstr "Все"
+
+#: app/templates/feed.html:17 app/templates/listing.html:32
+#: app/templates/listing_new.html:39
+msgid "Breed"
+msgstr "Порода"
+
+#: app/templates/feed.html:18 app/templates/feed.html:23
+msgid "Any"
+msgstr "Любая"
+
+#: app/templates/feed.html:21 app/templates/listing.html:42
+#: app/templates/listing_new.html:50
+msgid "Size"
+msgstr "Размер"
+
+# Значения
+#: app/templates/feed.html:24 app/templates/listing.html:4
+msgid "Small"
+msgstr "Мелкая"
+
+#: app/templates/feed.html:25 app/templates/listing.html:4
+msgid "Medium"
+msgstr "Средняя"
+
+#: app/templates/feed.html:26 app/templates/listing.html:4
+msgid "Large"
+msgstr "Крупная"
+
+#: app/templates/feed.html:30
+msgid "Not earlier than"
+msgstr "Не раньше"
+
+#: app/templates/feed.html:41
+msgid "Show more"
+msgstr "Показать ещё"
+
+#: app/templates/listing.html:28
+msgid "Date"
+msgstr "Дата"
+
+#: app/templates/listing.html:37 app/templates/listing_new.html:43
+msgid "Colour"
+msgstr "Окрас"
+
+#: app/templates/listing.html:50 app/templates/listing_new.html:59
+msgid "Sex"
+msgstr "Пол"
+
+#: app/templates/listing.html:51 app/templates/listing_new.html:62
+msgid "Male"
+msgstr "Кобель"
+
+#: app/templates/listing.html:51 app/templates/listing_new.html:63
+msgid "Female"
+msgstr "Сука"
+
+#: app/templates/listing.html:61
+msgid "Possible matches"
+msgstr "Возможные совпадения"
+
+#: app/templates/listing.html:63
+msgid ""
+"The system compares your photo with listings of the opposite type. Only "
+"you can see these matches."
+msgstr ""
+"Система сравнивает фотографию вашей собаки с объявлениями "
+"противоположного типа. Совпадения видите только вы."
+
+#: app/templates/listing.html:66
+msgid "Searching…"
+msgstr "Ищем…"
+
+# Страница объявления
+#: app/templates/listing.html:87
+msgid "Have you seen this dog?"
+msgstr "Видели эту собаку?"
+
+#: app/templates/listing.html:90
+msgid "Where and when you saw it, any details"
+msgstr "Где и когда видели, приметы"
+
+#: app/templates/listing.html:91
+msgid "Phone (optional)"
+msgstr "Телефон (необязательно)"
+
+#: app/templates/listing.html:93
+msgid "Send"
+msgstr "Отправить"
+
+#: app/templates/listing.html:97
+msgid "to respond"
+msgstr "чтобы откликнуться"
+
+# Создание объявления
+#: app/templates/listing_new.html:2 app/templates/listing_new.html:6
+msgid "New listing"
+msgstr "Новое объявление"
+
+#: app/templates/listing_new.html:12
+msgid "I lost a dog"
+msgstr "Пропала собака"
+
+#: app/templates/listing_new.html:16
+msgid "I found a dog"
+msgstr "Нашёл собаку"
+
+#: app/templates/listing_new.html:21
+msgid "Title"
+msgstr "Заголовок"
+
+#: app/templates/listing_new.html:23
+msgid "Lost a ginger corgi near the station"
+msgstr "Пропал рыжий корги у вокзала"
+
+#: app/templates/listing_new.html:27
+msgid "When it happened"
+msgstr "Когда это произошло"
+
+#: app/templates/listing_new.html:32
+msgid "Description"
+msgstr "Описание"
+
+#: app/templates/listing_new.html:34
+msgid "Distinguishing marks, circumstances, behaviour"
+msgstr "Приметы, обстоятельства, поведение"
+
+#: app/templates/listing_new.html:52
+msgid "Not specified"
+msgstr "Не указан"
+
+#: app/templates/listing_new.html:53
+msgid "Small, under 35 cm"
+msgstr "Мелкая, до 35 см"
+
+#: app/templates/listing_new.html:54
+msgid "Medium, 35–55 cm"
+msgstr "Средняя, 35–55 см"
+
+#: app/templates/listing_new.html:55
+msgid "Large, over 55 cm"
+msgstr "Крупная, выше 55 см"
+
+#: app/templates/listing_new.html:61
+msgid "Unknown"
+msgstr "Неизвестен"
+
+#: app/templates/listing_new.html:69
+msgid "Size note"
+msgstr "Уточнение к размеру"
+
+#: app/templates/listing_new.html:71
+msgid "A puppy, but with large paws"
+msgstr "Щенок, но лапы крупные"
+
+#: app/templates/listing_new.html:75
+msgid "Location"
+msgstr "Место"
+
+#: app/templates/listing_new.html:77
+msgid "Street, building or landmark"
+msgstr "Улица, дом или ориентир"
+
+#: app/templates/listing_new.html:78
+msgid "Find"
+msgstr "Найти"
+
+#: app/templates/listing_new.html:80
+msgid "Or click the map to place a pin"
+msgstr "Или кликните по карте, чтобы поставить точку"
+
+#: app/templates/listing_new.html:86
+msgid "Photos"
+msgstr "Фотографии"
+
+#: app/templates/listing_new.html:89
+msgid "Up to 8 photos, 10 MB each"
+msgstr "До 8 фотографий, каждая не больше 10 МБ"
+
+#: app/templates/listing_new.html:93
+msgid "Contact phone"
+msgstr "Телефон для связи"
+
+#: app/templates/listing_new.html:95
+msgid "Leave empty to use your profile phone"
+msgstr "Оставьте пустым, чтобы использовать телефон профиля"
+
+# Поля формы
+#: app/templates/login.html:9 app/templates/register.html:13
+msgid "Email"
+msgstr "Email"
+
+#: app/templates/login.html:13 app/templates/register.html:21
+msgid "Password"
+msgstr "Пароль"
+
+# Страница входа и регистрации
+#: app/templates/login.html:19
+msgid "No account yet?"
+msgstr "Нет аккаунта?"
+
+#: app/templates/register.html:9
+msgid "Name"
+msgstr "Имя"
+
+#: app/templates/register.html:17
+msgid "Phone"
+msgstr "Телефон"
+
+#: app/templates/register.html:27
+msgid "Already have an account?"
+msgstr "Уже есть аккаунт?"
+
+#: app/templates/email/base.html:12 app/templates/email/new_match.txt:14
+#: app/templates/email/new_response.txt:13
+msgid "This is an automated message, no reply is needed."
+msgstr "Это письмо отправлено автоматически, отвечать на него не нужно."
+
+# Письма
+#: app/templates/email/new_match.html:3 app/templates/email/new_match.txt:1
+#: app/templates/email/new_response.html:3
+#: app/templates/email/new_response.txt:1
+#, python-format
+msgid "Hello, %(name)s!"
+msgstr "Здравствуйте, %(name)s!"
+
+#: app/templates/email/new_match.html:6 app/templates/email/new_match.txt:3
+msgid "A similar listing was found for your listing"
+msgstr "По вашему объявлению найдено похожее:"
+
+#: app/templates/email/new_match.html:25 app/templates/email/new_match.txt:7
+msgid "Photo similarity"
+msgstr "Сходство по фотографии"
+
+#: app/templates/email/new_match.html:33
+msgid "Open listing"
+msgstr "Открыть объявление"
+
+#: app/templates/email/new_match.html:37 app/templates/email/new_match.txt:11
+msgid ""
+"The match was determined automatically by photo, location and date. "
+"Please check the listing — the system can be wrong."
+msgstr ""
+"Совпадение определено автоматически по фотографии, месту и дате. "
+"Проверьте объявление — система может ошибаться."
+
+#: app/templates/email/new_response.html:6
+#: app/templates/email/new_response.txt:3
+msgid "Someone responded to your listing"
+msgstr "На ваше объявление откликнулись:"
+
+#: app/templates/email/new_response.html:15
+#: app/templates/email/new_response.txt:7
+msgid "From"
+msgstr "От"
+
+#: app/templates/email/new_response.html:21
+msgid "View all responses"
+msgstr "Посмотреть все отклики"
