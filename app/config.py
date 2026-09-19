@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     base_url: str = "http://localhost:8000"
     notifications_enabled: bool = True
 
+    default_locale: str = "en"
+    supported_locales: list[str] = ["en", "ru"]
+
 
 @lru_cache
 def get_settings() -> Settings:

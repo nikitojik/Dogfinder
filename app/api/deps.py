@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from fastapi import Cookie, Depends, HTTPException, status
+from fastapi import Cookie, Depends, Header, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.i18n import gettext_for, normalize_locale
 from app.core.security import decode_access_token
 from app.db import get_session
 from app.models import User
@@ -39,6 +40,9 @@ async def get_current_user(
     return user
 
 
+CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
 async def get_optional_user(
     session: SessionDep,
     access_token: Annotated[str | None, Cookie()] = None,
@@ -52,5 +56,23 @@ async def get_optional_user(
     return user if user and user.is_active else None
 
 
-CurrentUser = Annotated[User, Depends(get_current_user)]
 OptionalUser = Annotated[User | None, Depends(get_optional_user)]
+
+
+async def get_locale(
+    lang: Annotated[str | None, Cookie()] = None,
+    accept_language: Annotated[str | None, Header()] = None,
+) -> str:
+    if lang:
+        return normalize_locale(lang)
+    return normalize_locale(accept_language)
+
+
+LocaleDep = Annotated[str, Depends(get_locale)]
+
+
+async def get_translator(locale: LocaleDep):
+    return gettext_for(locale)
+
+
+TranslatorDep = Annotated[object, Depends(get_translator)]

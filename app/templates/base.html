@@ -16,17 +16,26 @@
     <header class="site-header">
         <a href="/" class="logo">DogFinder</a>
         <nav>
-            <a href="/">Карта</a>
-            <a href="/feed">Лента</a>
+            <a href="/">{{ _("Map") }}</a>
+            <a href="/feed">{{ _("Listings") }}</a>
             {% if user %}
-            <a href="/listings/new">Разместить объявление</a>
-            <a href="/my">Мои объявления</a>
+            <a href="/listings/new">{{ _("Post a listing") }}</a>
+            <a href="/my">{{ _("My listings") }}</a>
             <span class="user-name">{{ user.name }}</span>
-            <button type="button" id="logout">Выйти</button>
+            <button type="button" id="logout">{{ _("Log out") }}</button>
             {% else %}
-            <a href="/login">Войти</a>
-            <a href="/register">Регистрация</a>
+            <a href="/login">{{ _("Log in") }}</a>
+            <a href="/register">{{ _("Sign up") }}</a>
             {% endif %}
+            <span class="lang-switch">
+                {% for code in ["en", "ru"] %}
+                {% if code == locale %}
+                <span class="lang-current">{{ code|upper }}</span>
+                {% else %}
+                <a href="/lang/{{ code }}">{{ code|upper }}</a>
+                {% endif %}
+                {% endfor %}
+            </span>
         </nav>
     </header>
 

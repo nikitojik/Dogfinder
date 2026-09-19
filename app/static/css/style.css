@@ -806,3 +806,23 @@ button:disabled {
 .feed-more button:hover {
     background: #e4e4e4;
 }
+
+.lang-switch {
+    display: flex;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    margin-left: 0.5rem;
+}
+
+.lang-current {
+    color: #1a1a1a;
+    font-weight: 500;
+}
+
+.lang-switch a {
+    color: #bbb;
+}
+
+.lang-switch a:hover {
+    color: #666;
+}
