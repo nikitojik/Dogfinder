@@ -59,3 +59,8 @@ async def my_listings_page(request: Request, user: OptionalUser):
     if user is None:
         return RedirectResponse("/login", status_code=302)
     return render(request, "my_listings.html", user)
+
+
+@router.get("/feed", response_class=HTMLResponse)
+async def feed_page(request: Request, user: OptionalUser):
+    return render(request, "feed.html", user)
