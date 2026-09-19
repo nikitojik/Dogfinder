@@ -1,11 +1,12 @@
 import asyncio
 import logging
 
-from sqlalchemy import update
+from sqlalchemy import select, update
 
 from app.db import SessionLocal
 from app.ml.embedder import get_embedder
 from app.models import Photo
+from app.services.notification_tasks import notify_matches_for_listing
 from app.services.storage import (
     build_thumb_key,
     download_object,
@@ -51,4 +52,9 @@ async def process_photo(photo_id: int, object_key: str) -> None:
         await session.execute(update(Photo).where(Photo.id == photo_id).values(**values))
         await session.commit()
 
+        listing_id = await session.scalar(select(Photo.listing_id).where(Photo.id == photo_id))
+
     logger.info("Фото photo_id=%s обработано: %s", photo_id, ", ".join(values))
+
+    if "embedding" in values and listing_id is not None:
+        await notify_matches_for_listing(listing_id)
