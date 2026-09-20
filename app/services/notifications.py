@@ -63,7 +63,7 @@ async def deliver(
     session: AsyncSession,
     **context,
 ) -> bool:
-    html, text = render_email(template, owner_name=user.name, **context)
+    html, text = render_email(template, locale=user.locale, owner_name=user.name, **context)
     ok = await send_email(to=user.email, subject=subject, html=html, text=text)
 
     if ok:

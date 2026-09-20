@@ -3,6 +3,7 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
+from app.core.i18n import gettext_for
 from app.db import SessionLocal
 from app.models import Listing, Response, User
 from app.models.notification import NotificationKind
@@ -45,11 +46,16 @@ async def notify_new_response(response_id: int) -> None:
             if notification is None:
                 return
 
+            translate = gettext_for(owner.locale)
+            subject = translate("Response to your listing: %(title)s") % {
+                "title": response.listing.title
+            }
+
             await deliver(
                 notification=notification,
                 user=owner,
                 template="new_response",
-                subject=f"Отклик на объявление «{response.listing.title}»",
+                subject=subject,
                 session=session,
                 author_name=response.author.name,
                 listing=response.listing,
@@ -95,11 +101,14 @@ async def _send_match_email(
     if notification is None:
         return
 
+    translate = gettext_for(recipient.locale)
+    subject = translate("Similar listing: %(title)s") % {"title": match.title}
+
     await deliver(
         notification=notification,
         user=recipient,
         template="new_match",
-        subject=f"Похожее объявление: {match.title}",
+        subject=subject,
         session=session,
         listing=listing,
         match=match,

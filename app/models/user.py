@@ -23,5 +23,7 @@ class User(Base, TimestampMixin):
         cascade="all, delete-orphan",
     )
 
+    locale: Mapped[str] = mapped_column(String(5), default="en", server_default="en")
+
     def __repr__(self) -> str:
         return f"User(id={self.id}, email={self.email!r})"

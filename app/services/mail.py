@@ -6,6 +6,7 @@ import aiosmtplib
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from app.config import settings
+from app.core.i18n import gettext_for
 
 logger = logging.getLogger(__name__)
 
@@ -17,9 +18,21 @@ jinja_env = Environment(
 )
 
 
-def render_email(name: str, **context) -> tuple[str, str]:
-    html = jinja_env.get_template(f"{name}.html").render(base_url=settings.base_url, **context)
-    text = jinja_env.get_template(f"{name}.txt").render(base_url=settings.base_url, **context)
+def render_email(name: str, locale: str = "en", **context) -> tuple[str, str]:
+    translate = gettext_for(locale)
+
+    html = jinja_env.get_template(f"{name}.html").render(
+        base_url=settings.base_url,
+        locale=locale,
+        _=translate,
+        **context,
+    )
+    text = jinja_env.get_template(f"{name}.txt").render(
+        base_url=settings.base_url,
+        locale=locale,
+        _=translate,
+        **context,
+    )
     return html, text
 
 

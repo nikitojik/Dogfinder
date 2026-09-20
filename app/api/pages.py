@@ -56,9 +56,13 @@ async def my_listings_page(request: Request, user: OptionalUser, locale: LocaleD
 
 
 @router.get("/lang/{code}")
-async def set_language(code: str, request: Request):
+async def set_language(code: str, request: Request, user: OptionalUser, session: SessionDep):
     target = normalize_locale(code)
     referer = request.headers.get("referer", "/")
+
+    if user is not None and user.locale != target:
+        user.locale = target
+        await session.commit()
 
     response = RedirectResponse(referer, status_code=302)
     response.set_cookie("lang", target, max_age=60 * 60 * 24 * 365, samesite="lax")

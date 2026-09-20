@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response, status
 from sqlalchemy import select
 
-from app.api.deps import CurrentUser, SessionDep
+from app.api.deps import CurrentUser, LocaleDep, SessionDep
 from app.config import settings
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models import User
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-async def register(data: UserCreate, session: SessionDep) -> User:
+async def register(data: UserCreate, session: SessionDep, locale: LocaleDep) -> User:
     existing = await session.scalar(select(User).where(User.email == data.email))
     if existing is not None:
         raise HTTPException(
@@ -24,6 +24,7 @@ async def register(data: UserCreate, session: SessionDep) -> User:
         name=data.name,
         phone=data.phone,
         hashed_password=hash_password(data.password),
+        locale=locale,
     )
     session.add(user)
     await session.commit()
