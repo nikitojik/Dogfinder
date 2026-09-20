@@ -196,6 +196,21 @@ uv run ruff format .
 uv run pre-commit install
 ```
 
+Тестам нужна база `dogfinder_test`. Создаётся один раз:
+```bash
+docker compose exec db psql -U dogfinder -d postgres -c "CREATE DATABASE dogfinder_test;"
+docker compose exec db psql -U dogfinder -d dogfinder_test -c "CREATE EXTENSION postgis; CREATE EXTENSION vector;"
+```
+
+Запуск тестов:
+```bash
+uv run pytest
+```
+
+Схема разворачивается миграциями Alembic — так тесты заодно проверяют, что миграции
+применяются без ошибок. Таблицы очищаются после каждого теста, сессия приложения
+подменяется через `dependency_overrides`.
+
 ## Структура проекта
 
 ```
