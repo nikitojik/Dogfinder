@@ -33,6 +33,18 @@ def get_s3_client():
     )
 
 
+@lru_cache
+def get_signing_client():
+    return boto3.client(
+        "s3",
+        endpoint_url=settings.s3_public_endpoint or settings.s3_endpoint,
+        aws_access_key_id=settings.s3_access_key,
+        aws_secret_access_key=settings.s3_secret_key,
+        config=Config(signature_version="s3v4"),
+        region_name="us-east-1",
+    )
+
+
 def build_object_key(listing_id: int, content_type: str) -> str:
     ext = EXTENSIONS[content_type]
     return f"listings/{listing_id}/{uuid.uuid4().hex}.{ext}"
@@ -44,7 +56,7 @@ def build_thumb_key(object_key: str) -> str:
 
 
 def create_upload_url(object_key: str, content_type: str, expires: int = 600) -> str:
-    return get_s3_client().generate_presigned_url(
+    return get_signing_client().generate_presigned_url(
         ClientMethod="put_object",
         Params={
             "Bucket": settings.s3_bucket,
@@ -85,9 +97,8 @@ def delete_object(object_key: str) -> None:
 
 
 def public_url(object_key: str) -> str:
-    # Бакет открыт на чтение только для локальной разработки.
-    # Перед деплоем заменить на presigned GET с ограниченным сроком жизни.
-    return f"{settings.s3_endpoint}/{settings.s3_bucket}/{object_key}"
+    endpoint = settings.s3_public_endpoint or settings.s3_endpoint
+    return f"{endpoint}/{settings.s3_bucket}/{object_key}"
 
 
 def make_thumbnail(data: bytes) -> bytes:

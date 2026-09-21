@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+**/__pycache__
+.pytest_cache
+.ruff_cache
+.env
+.env.*
+!.env.example
+experiments/data
+experiments/crops
+tests
+*.pt
+app/locales/**/*.mo

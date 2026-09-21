@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     s3_access_key: str
     s3_secret_key: str
     s3_bucket: str = "pet-photos"
+    s3_public_endpoint: str | None = None
 
     secret_key: str
     algorithm: str = "HS256"

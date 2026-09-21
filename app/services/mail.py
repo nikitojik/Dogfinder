@@ -11,6 +11,7 @@ from app.core.i18n import gettext_for
 logger = logging.getLogger(__name__)
 
 EMAIL_TEMPLATES = Path(__file__).resolve().parent.parent / "templates" / "email"
+DEMO_DOMAIN = "@dogfinder.demo"
 
 jinja_env = Environment(
     loader=FileSystemLoader(EMAIL_TEMPLATES),
@@ -39,6 +40,9 @@ def render_email(name: str, locale: str = "en", **context) -> tuple[str, str]:
 async def send_email(to: str, subject: str, html: str, text: str) -> bool:
     if not settings.notifications_enabled:
         logger.info("Уведомления отключены, письмо для %s не отправлено", to)
+        return False
+    if to.endswith(DEMO_DOMAIN):
+        logger.info("Демо-адрес %s, письмо не отправлено", to)
         return False
 
     message = EmailMessage()
