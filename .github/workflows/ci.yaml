@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: astral-sh/setup-uv@v8
+      - uses: astral-sh/setup-uv@v5
 
       - name: Run pre-commit hooks
         run: uvx pre-commit run --all-files
@@ -41,7 +41,7 @@ jobs:
             -e POSTGRES_DB=dogfinder_test \
             dogfinder-db
 
-      - uses: astral-sh/setup-uv@v8
+      - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
 
