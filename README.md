@@ -1,108 +1,113 @@
 # DogFinder
+
 ![CI](https://github.com/nikitojik/Dogfinder/actions/workflows/ci.yml/badge.svg)
 
-Сервис поиска пропавших собак: владелец публикует объявление о пропаже, нашедший — объявление о находке, система сама сопоставляет их по фотографии и географии и уведомляет обоих.
+**English** | [Русский](README.ru.md)
 
-Ключевое отличие от обычной доски объявлений — поиск не по текстовому описанию («рыжий, средний, в ошейнике»), а по визуальному сходству фотографий. Текстовое описание собаки субъективно и плохо ищется; фотография объективна.
+**Live demo:** https://dogfinder.nkolesnikov.dev
 
-Интерфейс на английском и русском языках.
+A service for finding lost dogs. An owner posts a listing about a lost dog, someone who found a dog posts a listing about the find, and the system matches the two by photo and location and notifies both people.
 
-## Как это работает
+What sets it apart from a regular classifieds board is that the search runs on visual similarity of photos rather than on text. A description like "ginger, medium-sized, wearing a collar" is subjective and hard to search; a photo is not.
 
-1. Пользователь загружает фото и указывает место пропажи или находки.
-2. Детектор находит на фото собаку и вырезает её, отбрасывая фон.
-3. Нейросеть переводит изображение в вектор признаков (эмбеддинг).
-4. При появлении нового объявления система ищет кандидатов среди объявлений противоположного типа и ранжирует их по комбинации визуального сходства, расстояния и близости по времени.
-5. Если совпадение выше порога — письма уходят владельцам обоих объявлений.
+The interface is available in English and Russian.
 
-Шаг 2 не косметический. Без вырезания собаки модель кодирует всю сцену целиком, и фотографии разных собак на похожем фоне оказываются ближе друг к другу, чем две фотографии одной собаки в разной обстановке.
+## How it works
 
-## Возможности
+1. A user uploads a photo and marks where the dog was lost or found.
+2. An object detector locates the dog in the photo and crops it, discarding the background.
+3. A neural network turns the crop into a feature vector (an embedding).
+4. When a new listing appears, the system looks for candidates among listings of the opposite type and ranks them by a combination of visual similarity, distance, and proximity in time.
+5. If a match scores above a threshold, both owners receive an email.
 
-- [x] Регистрация и аутентификация
-- [x] Объявления о пропаже и находке
-- [x] Загрузка нескольких фотографий, превью
-- [x] Поиск по радиусу от точки, геокодинг адресов
-- [x] Интерактивная карта с кластеризацией маркеров
-- [x] Лента объявлений с фильтрами
-- [x] Отклики на объявления и управление ими
-- [x] Автоматический подбор совпадений по фотографии
-- [x] Уведомления на почту об откликах и совпадениях
-- [x] Английский и русский интерфейс, письма на языке получателя
-- [x] Демо-данные, тесты, CI, production-образ
-- [ ] Публичный деплой
+Step 2 is not cosmetic. Without the crop, the model encodes the whole scene, and photos of different dogs against a similar background end up closer to each other than two photos of the same dog in different surroundings.
 
-## Технологии
+## Features
 
-| Слой | Выбор | Зачем |
+- [x] Registration and authentication
+- [x] Lost and found listings
+- [x] Multiple photos per listing with thumbnails
+- [x] Radius search from a point, address geocoding
+- [x] Interactive map with marker clustering
+- [x] Listings feed with filters
+- [x] Responses to listings and response management
+- [x] Automatic photo-based matching
+- [x] Email notifications for responses and matches
+- [x] English and Russian interface, emails in the recipient's language
+- [x] Demo data, tests, CI, production image
+- [x] Public deployment with HTTPS
+
+## Tech stack
+
+| Layer | Choice | Why |
 |---|---|---|
-| API | FastAPI, Python 3.12 | асинхронность, автодокументация |
+| API | FastAPI, Python 3.12 | async, auto-generated docs |
 | ORM | SQLAlchemy 2.0 (async), asyncpg | |
-| БД | PostgreSQL 16 | |
-| Геоданные | PostGIS | поиск по радиусу на уровне БД, а не в Python |
-| Векторный поиск | pgvector | эмбеддинги в той же базе, что и гео |
-| Миграции | Alembic | |
-| Хранилище файлов | MinIO (S3-совместимое) | загрузка минуя API через presigned URL |
-| ML | CLIP ViT-B/32, YOLOv8n | предобученные модели, без дообучения |
-| Почта | aiosmtplib | асинхронная отправка без блокировки event loop |
-| Локализация | Babel, gettext | |
-| Фронтенд | Jinja2, Leaflet, нативный JavaScript | |
-| Тесты | pytest, pytest-asyncio, httpx | |
-| CI | GitHub Actions | линтер и тесты на каждый push |
-| Инфраструктура | Docker Compose, Caddy | HTTPS с автоматическими сертификатами |
+| Database | PostgreSQL 16 | |
+| Geodata | PostGIS | radius search in the database rather than in Python |
+| Vector search | pgvector | embeddings live in the same database as the geodata |
+| Migrations | Alembic | |
+| File storage | MinIO (S3-compatible) | uploads bypass the API via presigned URLs |
+| ML | CLIP ViT-B/32, YOLOv8n | pretrained models, no fine-tuning |
+| Email | aiosmtplib | sending without blocking the event loop |
+| Localization | Babel, gettext | |
+| Frontend | Jinja2, Leaflet, vanilla JavaScript | |
+| Tests | pytest, pytest-asyncio, httpx | |
+| CI | GitHub Actions | lint and tests on every push |
+| Infrastructure | Docker Compose, Caddy | HTTPS with automatic certificates |
 
-### Почему pgvector, а не отдельная векторная БД
+### Why pgvector instead of a dedicated vector database
 
-Поиск совпадений комбинированный: визуальное сходство плюс расстояние плюс близость по времени. Если векторы держать в отдельном хранилище, а гео — в Postgres, придётся объединять два набора результатов в коде приложения. Это либо неполная выборка, либо медленный запрос. Один `SELECT` с фильтрами и сортировкой по `<=>` решает задачу целиком.
+Matching is always combined: visual similarity plus distance plus proximity in time. If vectors lived in a separate store and geodata in Postgres, the two result sets would have to be merged in application code. That means either an incomplete candidate set or a slow query. A single `SELECT` with filters and ordering by `<=>` solves the whole problem.
 
-### Почему модели не дообучаются
+### Why the models are not fine-tuned
 
-CLIP и YOLO берутся предобученными. Дообучение под конкретную задачу требует размеченного датасета пар «одна и та же собака в разных условиях», которого нет в открытом доступе в достаточном объёме. Готовых моделей достаточно, чтобы система работала — что подтверждается замерами ниже.
+CLIP and YOLO are used as pretrained. Fine-tuning for this task would require a labeled dataset of "the same dog in different conditions" pairs, and no such dataset of sufficient size is publicly available. Off-the-shelf models are good enough for the system to work, as the measurements below show.
 
-## Архитектура
+## Architecture
 
-В production все компоненты работают в контейнерах, наружу открыт только Caddy:
+In production every component runs in a container, and only Caddy is exposed to the internet:
 
 ```
-                        Интернет
-                           │
-                        Caddy (HTTPS)
-                     ┌─────┴──────┐
-       dogfinder.<домен>     s3.<домен>
-                     │            │
-                  FastAPI ──────► MinIO
-                     │
-       BackgroundTasks: превью, эмбеддинги, матчинг, письма
-                     │
-         PostgreSQL + PostGIS + pgvector
+                         Internet
+                            │
+                       Caddy (HTTPS)
+                    ┌───────┴────────┐
+    dogfinder.nkolesnikov.dev   s3.nkolesnikov.dev
+                    │                │
+                 FastAPI ──────────► MinIO
+                    │
+      BackgroundTasks: thumbnails, embeddings, matching, email
+                    │
+        PostgreSQL + PostGIS + pgvector
 ```
 
-Модели CLIP и YOLO загружаются в память один раз при старте приложения. Переменная `ML_LAZY_LOAD` откладывает загрузку до первого использования — это нужно только при разработке, когда `--reload` перезапускает процесс после каждой правки. В production модели грузятся при старте: ошибка загрузки обнаруживается сразу при деплое, а потребление памяти предсказуемо с первой минуты.
+CLIP and YOLO are loaded into memory once, when the application starts. The `ML_LAZY_LOAD` variable defers loading until first use. That is only needed during development, when `--reload` restarts the process after every edit. In production the models load at startup: a loading failure surfaces immediately at deploy time, and memory usage is predictable from the first minute.
 
-## Дорожная карта
+## Roadmap
 
-| Блок | Содержание | Статус |
+| Block | Scope | Status |
 |---|---|---|
-| 0 | Скелет проекта, Docker, конфигурация, миграции | выполнено |
-| 1 | Пользователи, объявления, отклики, аутентификация | выполнено |
-| 2 | Загрузка фотографий в объектное хранилище | выполнено |
-| 3 | PostGIS, поиск по радиусу, геокодинг | выполнено |
-| 4 | Карта, страницы, формы | выполнено |
-| 5 | Детекция, эмбеддинги, векторный поиск | выполнено |
-| 6 | Уведомления на почту | выполнено |
-| 7 | Лента с фильтрами, локализация | выполнено |
-| 8 | Демо-данные, тесты, CI, production-образ, деплой | в работе: остался деплой |
+| 0 | Project skeleton, Docker, configuration, migrations | done |
+| 1 | Users, listings, responses, authentication | done |
+| 2 | Photo uploads to object storage | done |
+| 3 | PostGIS, radius search, geocoding | done |
+| 4 | Map, pages, forms | done |
+| 5 | Detection, embeddings, vector search | done |
+| 6 | Email notifications | done |
+| 7 | Feed with filters, localization | done |
+| 8 | Demo data, tests, CI, production image, deployment | done |
 
-Система баллов за подтверждённые находки была в исходном плане, но от неё решено отказаться. Геймификация в сервисе, где ищут потерявшихся питомцев, слабо оправдана: мотивации у участников достаточно и без баллов. Технической глубины механика тоже не добавляет — это таблица событий и агрегат по ней.
+A points system for confirmed finds was part of the original plan but was dropped. Gamification is hard to justify in a service where people look for lost pets: participants are motivated enough without points. The mechanic also adds no technical depth — it amounts to an events table and an aggregate over it.
 
-## Требования
+## Requirements
 
-- Docker и Docker Compose
-- [uv](https://docs.astral.sh/uv/) (менеджер пакетов Python)
+- Docker and Docker Compose
+- [uv](https://docs.astral.sh/uv/) (Python package manager)
 
-Отдельно ставить Python не нужно — uv скачает нужную версию сам.
+There is no need to install Python separately — uv downloads the right version itself.
 
-## Быстрый старт
+## Quick start
 
 ```bash
 git clone https://github.com/nikitojik/Dogfinder.git dogfinder
@@ -117,75 +122,77 @@ uv run pybabel compile -d app/locales
 uv run uvicorn app.main:app --reload
 ```
 
-Значения в `.env.example` подходят для локального запуска как есть. Для отправки писем нужно заполнить `SMTP_USER` и `SMTP_PASSWORD`; без них приложение работает, но уведомления не уходят — отключить их полностью можно через `NOTIFICATIONS_ENABLED=false`.
+The values in `.env.example` work for a local run as they are. To send email, fill in `SMTP_USER` and `SMTP_PASSWORD`; without them the application still works, but notifications are not delivered. They can be disabled entirely with `NOTIFICATIONS_ENABLED=false`.
 
-При первом запуске скачиваются веса моделей: CLIP около 600 МБ, YOLO 6 МБ.
+Model weights are downloaded on first run: about 600 MB for CLIP and 6 MB for YOLO.
 
-Доступные адреса:
+Local addresses:
 
-| Адрес | Что это |
+| Address | What it is |
 |---|---|
-| http://localhost:8000 | приложение |
-| http://localhost:8000/docs | документация API |
-| http://localhost:8000/health | проверка состояния |
-| http://localhost:9001 | консоль MinIO (`minioadmin` / `minioadmin`) |
+| http://localhost:8000 | application |
+| http://localhost:8000/docs | API documentation |
+| http://localhost:8000/health | health check |
+| http://localhost:9001 | MinIO console (`minioadmin` / `minioadmin`) |
 
-## Проверка работоспособности
+## Health check
 
 ```bash
 curl http://localhost:8000/health
 ```
 
-Ожидаемый ответ:
+Expected response:
 
 ```json
 {"status": "ok", "postgis": "3.4.x", "pgvector": "0.7.x"}
 ```
 
-Значение `not installed` означает, что миграции не применены.
+A value of `not installed` means migrations have not been applied.
 
-## Демо-данные
+## Demo data
 
 ```bash
 NOTIFICATIONS_ENABLED=false uv run python -m app.scripts.seed
 ```
 
-Создаёт восемь демо-пользователей и около 230 объявлений вокруг заданного центра:
+Creates eight demo users and about 230 listings around a configurable center point:
 
-- 200 объявлений с фотографиями из [Dog CEO API](https://dog.ceo/dog-api/), построенного на Stanford Dogs Dataset. Порода извлекается из адреса снимка
-- 15 пар «пропажа — находка» из собственных снимков в `experiments/data`, по две фотографии одной собаки в разных условиях. На них демонстрируется матчинг
+- 200 listings with photos from the [Dog CEO API](https://dog.ceo/dog-api/), which is built on the Stanford Dogs Dataset. The breed is extracted from the image URL
+- 15 lost-and-found pairs from my own photos in `experiments/data`, two photos of the same dog taken in different conditions. These pairs demonstrate matching
 
-Скрипт отказывается работать при включённых уведомлениях: иначе каждое новое объявление порождало бы письма владельцам найденных совпадений.
+The live demo is seeded around Velsk, a small town in northern Russia.
 
-Демо-пользователи получают адреса на домене `dogfinder.demo`. Письма на этот домен не отправляются никогда — иначе на публичном стенде каждая загрузка фото порождала бы пачку недоставленных писем. Пароль у всех демо-аккаунтов `demopassword`.
+The script refuses to run while notifications are enabled: otherwise every new listing would trigger emails to the owners of the matches it finds.
 
-## Разработка
+Demo users get addresses on the `dogfinder.demo` domain. Mail to that domain is never sent — on a public instance, every photo upload would otherwise produce a batch of undeliverable emails. All demo accounts use the password `demopassword`.
 
-### Управление окружением
+## Development
+
+### Managing the environment
 
 ```bash
-docker compose stop     # остановить контейнеры
-docker compose start    # запустить снова
-docker compose down     # удалить контейнеры, данные сохранятся
-docker compose down -v  # удалить вместе с данными
+docker compose stop     # stop containers
+docker compose start    # start them again
+docker compose down     # remove containers, data is kept
+docker compose down -v  # remove containers together with data
 ```
 
-### Миграции
+### Migrations
 
 ```bash
-uv run alembic revision --autogenerate -m "описание"
+uv run alembic revision --autogenerate -m "description"
 uv run alembic upgrade head
 uv run alembic downgrade -1
 uv run alembic current
 ```
 
-Автогенерация видит только те модели, которые импортированы в `app/models/__init__.py`. Если миграция получилась пустой — скорее всего, забыт импорт.
+Autogeneration only sees models imported in `app/models/__init__.py`. If a migration comes out empty, an import is most likely missing.
 
-Миграции с enum-типами требуют ручной правки: Alembic создаёт типы, но не удаляет их в `downgrade`. С пространственными колонками ситуация обратная — GeoAlchemy2 создаёт GIST-индекс сам, и сгенерированный `create_index` из миграции нужно удалить.
+Migrations with enum types need manual editing: Alembic creates the types but does not drop them in `downgrade`. Spatial columns have the opposite problem — GeoAlchemy2 creates the GIST index on its own, so the generated `create_index` has to be removed from the migration.
 
-### Переводы
+### Translations
 
-После добавления новых строк в интерфейс:
+After adding new strings to the interface:
 
 ```bash
 uv run pybabel extract -F babel.cfg -o app/locales/messages.pot .
@@ -193,53 +200,53 @@ uv run pybabel update -i app/locales/messages.pot -d app/locales
 uv run pybabel compile -d app/locales
 ```
 
-`update` сохраняет уже сделанные переводы и добавляет новые строки с пустым `msgstr`. Непереведённое ищется поиском по `msgstr ""` в `app/locales/ru/LC_MESSAGES/messages.po`.
+`update` keeps existing translations and adds new strings with an empty `msgstr`. Untranslated entries can be found by searching for `msgstr ""` in `app/locales/ru/LC_MESSAGES/messages.po`.
 
-Скомпилированные `.mo` не хранятся в репозитории — они собираются при сборке Docker-образа.
+Compiled `.mo` files are not stored in the repository — they are built when the Docker image is built.
 
-### Пересчёт эмбеддингов
+### Recomputing embeddings
 
 ```bash
 uv run python -m app.scripts.backfill_embeddings
 ```
 
-Обрабатывает фотографии, у которых ещё нет вектора: создаёт превью, ищет собаку детектором, считает эмбеддинг.
+Processes photos that do not have a vector yet: creates a thumbnail, runs the detector, computes the embedding.
 
-### Тесты
+### Tests
 
-Тестам нужна отдельная база `dogfinder_test`. Создаётся один раз:
+The tests need a separate `dogfinder_test` database, created once:
 
 ```bash
 docker compose exec db psql -U dogfinder -d postgres -c "CREATE DATABASE dogfinder_test;"
 ```
 
-Дальше:
+Then:
 
 ```bash
 uv run pytest -v
 ```
 
-Схема тестовой базы разворачивается миграциями Alembic, а не через `create_all` из метаданных. Это медленнее на пару секунд, но тесты работают с той же схемой, что и production, и заодно проверяют, что миграции применяются без ошибок. Есть и практическая причина: `create_all` генерирует неверный DDL для пространственных колонок GeoAlchemy2.
+The test schema is built by running the Alembic migrations rather than by calling `create_all` on the metadata. That costs a couple of seconds, but the tests run against the same schema as production and also verify that the migrations apply cleanly. There is a practical reason as well: `create_all` generates invalid DDL for GeoAlchemy2 spatial columns.
 
-Сессия приложения подменяется через `dependency_overrides`, запросы идут через `httpx.ASGITransport` без поднятия сервера. Таблицы очищаются после каждого теста.
+The application session is swapped out through `dependency_overrides`, and requests go through `httpx.ASGITransport` without starting a server. Tables are cleared after every test.
 
-Что покрыто:
+What is covered:
 
-- **аутентификация** — регистрация, вход, недействительные токены, отсутствие хеша пароля в ответах
-- **права доступа** — чужое объявление нельзя изменить
-- **объявления** — частичное обновление не затирает остальные поля, удаление переводит в архив, фильтры и пагинация
-- **геопоиск** — отсечение по радиусу, сортировка по расстоянию, расстояние в метрах
+- **authentication** — registration, login, invalid tokens, no password hash in responses
+- **authorization** — another user's listing cannot be modified
+- **listings** — partial updates leave other fields intact, deletion archives the listing, filters and pagination
+- **geo search** — radius cutoff, ordering by distance, distance reported in meters
 
-Последний тест защищает от тихой ошибки: при замене `geography` на `geometry` он вернул бы расстояние в градусах, и проверка диапазона провалилась бы.
+The last test guards against a silent error: if `geography` were replaced with `geometry`, distances would come back in degrees, and the range check would fail.
 
-### Линтер
+### Linter
 
 ```bash
 uv run ruff check --fix .
 uv run ruff format .
 ```
 
-Запускается автоматически перед коммитом через pre-commit:
+It runs automatically before each commit through pre-commit:
 
 ```bash
 uv run pre-commit install
@@ -247,224 +254,229 @@ uv run pre-commit install
 
 ### CI
 
-GitHub Actions запускает на каждый push в `main` и на каждый pull request два независимых задания.
+GitHub Actions runs two independent jobs on every push to `main` and on every pull request.
 
-**Линтер** прогоняет те же pre-commit хуки, что и при локальном коммите. Результат в CI и локально совпадает, потому что используются одни и те же версии инструментов.
+**Lint** runs the same pre-commit hooks as a local commit. Results in CI and locally match because the same tool versions are used.
 
-**Тесты** собирают образ Postgres из `docker/postgres/Dockerfile` — готового публичного образа с PostGIS и pgvector одновременно нет. Заодно проверяется, что Dockerfile собирается.
+**Tests** build the Postgres image from `docker/postgres/Dockerfile`, since no public image ships both PostGIS and pgvector. This also verifies that the Dockerfile builds.
 
-Готовность базы проверяется через `pg_isready -h 127.0.0.1`, а не просто `pg_isready`. Официальный образ при первом старте поднимает временный сервер для инициализации, который слушает только unix-сокет. Без флага проверка сообщит о готовности во время инициализации, и тесты упадут, когда сервер перезапустится.
+Database readiness is checked with `pg_isready -h 127.0.0.1` rather than plain `pg_isready`. On first start, the official image runs a temporary server for initialization that listens only on a unix socket. Without the flag, the check reports readiness during initialization, and the tests fail when the server restarts.
 
-## Развёртывание
+## Deployment
 
-### Образ приложения
+Day-to-day server operations — updating code, logs, backups, troubleshooting — are covered in [SERVER.md](SERVER.md).
+
+### Application image
 
 ```bash
 docker build -t dogfinder-app .
 ```
 
-Сборка в три стадии: общая база с системными библиотеками, сборочная стадия с uv и кешами, финальная — только результат. Итоговый образ около 2 ГБ.
+The build has three stages: a shared base with system libraries, a build stage with uv and its caches, and a final stage containing only the result. The resulting image is about 2 GB.
 
-**Torch без CUDA.** На Linux стандартная сборка PyTorch тянет библиотеки для видеокарт NVIDIA — несколько гигабайт, бесполезных на сервере без GPU. В `pyproject.toml` torch и torchvision для Linux берутся из CPU-индекса PyTorch. На macOS маркер платформы не срабатывает, и остаётся обычная сборка с поддержкой MPS.
+**PyTorch without CUDA.** On Linux, the standard PyTorch build pulls in libraries for NVIDIA GPUs — several gigabytes that are useless on a server without a GPU. In `pyproject.toml`, torch and torchvision are taken from PyTorch's CPU index on Linux. On macOS the platform marker does not match, and the regular build with MPS support is used.
 
-**Веса внутри образа.** CLIP и YOLO скачиваются на этапе сборки, а в рантайме выставлен `HF_HUB_OFFLINE=1`. Контейнер стартует без обращения к сети и не зависит от доступности Hugging Face. Если веса по какой-то причине пропадут, приложение упадёт при старте, а не станет молча скачивать 600 МБ.
+**Weights baked into the image.** CLIP and YOLO are downloaded at build time, and `HF_HUB_OFFLINE=1` is set at runtime. The container starts without touching the network and does not depend on Hugging Face being available. If the weights were ever missing, the application would fail at startup instead of silently downloading 600 MB.
 
-**Непривилегированный пользователь.** Приложение внутри контейнера работает не от root.
+**Unprivileged user.** The application runs as a non-root user inside the container.
 
-При старте контейнер применяет миграции и запускает uvicorn с одним воркером. Второй воркер удвоил бы расход памяти на модели, а тротлинг писем и лимит геокодера рассчитаны на один процесс.
+On startup the container applies migrations and runs uvicorn with a single worker. A second worker would double the memory spent on the models, and email throttling and the geocoder rate limit are designed for a single process.
 
-Образ собирается под архитектуру машины, на которой запущена сборка. Образ, собранный на Apple Silicon, не запустится на сервере с x86 — поэтому на сервере его собирают заново из исходников.
+The image is built for the architecture of the machine that builds it. An image built on Apple Silicon will not run on an x86 server, so the server builds it from source.
 
-### Два адреса хранилища
+### Two storage addresses
 
-Приложение и браузер обращаются к MinIO по разным адресам. Приложение ходит внутри Docker-сети по `http://minio:9000`, браузер — по публичному `https://s3.<домен>`.
+The application and the browser reach MinIO at different addresses. The application talks to it inside the Docker network at `http://minio:9000`; the browser uses the public `https://s3.nkolesnikov.dev`.
 
-Для presigned URL это принципиально: хост входит в подпись, и ссылка, подписанная для внутреннего адреса, не откроется по публичному. Поэтому в коде два клиента S3. Внутренний работает с файлами, второй только подписывает ссылки — подпись вычисляется локально, так что в сеть он не ходит, и ему достаточно знать публичный адрес из `S3_PUBLIC_ENDPOINT`.
+This matters for presigned URLs: the host is part of the signature, so a URL signed for the internal address will not work at the public one. The code therefore uses two S3 clients. The internal one handles files, and the second one only signs URLs. Signing is computed locally without any network calls, so the second client only needs to know the public address from `S3_PUBLIC_ENDPOINT`.
 
-### Production-конфигурация
+### Production configuration
 
-`docker-compose.prod.yml` описывает всю систему: приложение, базу, MinIO и Caddy.
+`docker-compose.prod.yml` describes the whole system: the application, the database, MinIO, and Caddy.
 
-- наружу открыты только порты Caddy, 80 и 443
-- база доступна лишь внутри Docker-сети
-- консоль MinIO привязана к `127.0.0.1` и доступна только через SSH-туннель
-- приложение стартует, только когда база и хранилище прошли проверку готовности, а бакет создан
-- Caddy сам получает и продлевает сертификаты Let's Encrypt; они хранятся в отдельном томе, чтобы пересоздание контейнера не расходовало лимит выдачи
-- у проекта собственное имя `dogfinder-prod`, чтобы его тома не пересекались с томами разработки
+- only Caddy's ports, 80 and 443, are exposed
+- the database is reachable only inside the Docker network
+- the MinIO console is bound to `127.0.0.1` and reachable only through an SSH tunnel
+- the application starts only after the database and storage pass their health checks and the bucket has been created
+- Caddy obtains and renews Let's Encrypt certificates on its own; they are kept in a dedicated volume so that recreating the container does not burn through the issuance rate limit
+- the project has its own name, `dogfinder-prod`, so its volumes never collide with the development ones
 
-Настройки берутся из `.env.prod`, шаблон — `.env.prod.example`. Пароли удобно генерировать через `openssl rand -hex 24`: в base64 встречается `/`, который ломает строку подключения к базе.
+MinIO images are pulled from `quay.io`. In September 2026 MinIO removed `minio/minio` and `minio/mc` from Docker Hub after archiving its community edition. Docker Hub answers such requests with "pull access denied", which looks like an authentication problem even though the repository simply no longer exists.
 
-Проверить конфигурацию без запуска:
+Settings come from `.env.prod`; the template is `.env.prod.example`. Passwords are best generated with `openssl rand -hex 24`: base64 output can contain `/`, which breaks the database connection string.
+
+Check the configuration without starting anything:
 
 ```bash
 docker compose -f docker-compose.prod.yml --env-file .env.prod config
 ```
 
-Запуск на сервере:
+Start on the server:
 
 ```bash
 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```
 
-До первого запуска DNS-записи обоих поддоменов должны указывать на сервер. Иначе Caddy не получит сертификат, а после нескольких неудачных попыток Let's Encrypt временно заблокирует выдачу для домена.
+Before the first start, the DNS records for both subdomains must point to the server. Otherwise Caddy cannot obtain a certificate, and after several failed attempts Let's Encrypt temporarily blocks issuance for the domain.
 
-## Структура проекта
+## Project structure
 
 ```
 app/
-├── main.py           точка входа, роутеры, lifespan
-├── config.py         настройки из переменных окружения
-├── db.py             движок и сессии SQLAlchemy
-├── models/           модели таблиц
-├── schemas/          схемы запросов и ответов (Pydantic)
-├── api/              обработчики HTTP и страниц
-├── services/         матчинг, геокодинг, хранилище, почта, фоновые задачи
-├── core/             безопасность, локализация, шаблонизатор
-├── ml/               детекция и эмбеддинги
-├── scripts/          демо-данные, пересчёт эмбеддингов
-├── locales/          каталоги переводов
-├── static/           CSS и JavaScript
-└── templates/        шаблоны страниц и писем
+├── main.py           entry point, routers, lifespan
+├── config.py         settings from environment variables
+├── db.py             SQLAlchemy engine and sessions
+├── models/           table models
+├── schemas/          request and response schemas (Pydantic)
+├── api/              HTTP and page handlers
+├── services/         matching, geocoding, storage, email, background tasks
+├── core/             security, localization, templating
+├── ml/               detection and embeddings
+├── scripts/          demo data, embedding backfill
+├── locales/          translation catalogs
+├── static/           CSS and JavaScript
+└── templates/        page and email templates
 
-tests/                тесты API
-experiments/          прототипы матчинга и замеры качества
-migrations/           миграции Alembic
-docker/               образ Postgres, скрипт запуска приложения
+tests/                API tests
+experiments/          matching prototypes and quality measurements
+migrations/           Alembic migrations
+docker/               Postgres image, application entrypoint
 .github/workflows/    CI
-Dockerfile            образ приложения
-docker-compose.yml         окружение для разработки
+Dockerfile            application image
+docker-compose.yml         development environment
 docker-compose.prod.yml    production
-Caddyfile             маршрутизация и HTTPS
+Caddyfile             routing and HTTPS
+SERVER.md             server operations guide
 ```
 
-## Как устроен матчинг
+## How matching works
 
-### Комбинированная оценка
+### Combined score
 
-Итоговый скор складывается из трёх частей:
+The final score has three parts:
 
 ```
-score = 0.6 × визуальное сходство
-      + 0.2 × близость по расстоянию
-      + 0.2 × близость по времени
+score = 0.6 × visual similarity
+      + 0.2 × distance proximity
+      + 0.2 × time proximity
 ```
 
-Гео- и временная составляющие затухают экспоненциально: `exp(-x / масштаб)`, где масштаб — 20 км и 30 дней. Линейное убывание вело бы себя хуже: разница между одним и двумя километрами для поиска собаки существеннее, чем между пятьюдесятью и пятьюдесятью одним.
+The distance and time components decay exponentially: `exp(-x / scale)`, with a scale of 20 km and 30 days. Linear decay would behave worse: for finding a dog, the difference between one and two kilometers matters far more than the difference between fifty and fifty-one.
 
-Кандидаты ищутся только среди объявлений противоположного типа: для пропажи — находки, и наоборот.
+Candidates are drawn only from listings of the opposite type: found dogs for a lost listing, and vice versa.
 
-### Разные пороги для разных каналов
+### Different thresholds for different channels
 
-На странице объявления показываются кандидаты с визуальным сходством выше **0.55**. Человек зашёл сам, и просмотреть пять кандидатов ему несложно.
+The listing page shows candidates with visual similarity above **0.55**. The person came to look, and scanning five candidates costs them little.
 
-Письмо отправляется при итоговом скоре выше **0.70**. Уведомление приходит без спроса, и ложное срабатывание раздражает сильнее, чем пропущенное совпадение.
+An email is sent when the combined score exceeds **0.70**. A notification arrives uninvited, and a false positive is more annoying than a missed match.
 
-## Уведомления
+## Notifications
 
-Письма отправляются в двух случаях: кто-то откликнулся на объявление, либо система нашла похожее объявление.
+Emails are sent in two cases: someone responded to a listing, or the system found a similar listing.
 
-Совпадение порождает два письма — владельцам обоих объявлений. Без этого была бы дыра: объявление о пропаже, опубликованное месяц назад, никогда бы не получило уведомления о свежей находке, потому что матчинг запускается только для нового объявления.
+A match produces two emails — one to each owner. Without that there would be a gap: a lost-dog listing posted a month ago would never hear about a fresh find, because matching runs only for the new listing.
 
-### Дедупликация
+### Deduplication
 
-Таблица `notifications` хранит факт отправки с уникальным ограничением на тройку «тип, объявление, предмет уведомления». Запись резервируется **до** попытки отправить письмо, и попытка вставить дубль падает на ограничении.
+The `notifications` table records every send with a unique constraint on the triple "type, listing, subject of the notification". The record is reserved **before** the email is sent, and an attempt to insert a duplicate fails on the constraint.
 
-Обратный порядок допустил бы гонку: две фоновые задачи одновременно проверили «ещё не отправляли» и обе отправили. Уникальный индекс в базе — единственная надёжная защита.
+The reverse order would allow a race: two background tasks check "not sent yet" at the same moment, and both send. A unique index in the database is the only reliable guard.
 
-### Тротлинг
+### Throttling
 
-Не более 10 писем в сутки на пользователя. Неудачные попытки не учитываются — считаются только записи с `sent = true`.
+No more than 10 emails per user per day. Failed attempts do not count — only records with `sent = true`.
 
-## Локализация
+## Localization
 
-Интерфейс доступен на английском и русском. Язык определяется по цепочке: кука `lang`, затем заголовок `Accept-Language`, затем язык по умолчанию. Явный выбор пользователя имеет приоритет над настройками браузера.
+The interface is available in English and Russian. The language is resolved in order: the `lang` cookie, then the `Accept-Language` header, then the default. An explicit user choice takes precedence over browser settings.
 
-Исходные строки в коде написаны по-английски и служат ключами перевода. Это позволяет приложению работать и без скомпилированных каталогов: при отсутствии перевода gettext возвращает исходную строку, которая уже на нужном языке по умолчанию.
+Source strings in the code are written in English and serve as translation keys. This lets the application work even without compiled catalogs: when a translation is missing, gettext returns the source string, which is already in the default language.
 
-### Строки в JavaScript
+### Strings in JavaScript
 
-Babel не разбирает JavaScript, поэтому подписи из скриптов собраны в объект `window.I18N`, который формируется в базовом шаблоне через тот же `_()`. Скрипты берут тексты оттуда.
+Babel does not parse JavaScript, so labels used by the scripts are collected into a `window.I18N` object, built in the base template with the same `_()`. The scripts read their text from there.
 
-Альтернативой был бы отдельный JSON-каталог для фронтенда, но тогда переводы пришлось бы держать в двух местах.
+The alternative would be a separate JSON catalog for the frontend, but then translations would have to be maintained in two places.
 
-### Язык писем
+### Email language
 
-Фоновая задача не знает, какую куку прислал браузер, — HTTP-запроса в этот момент уже нет. Поэтому выбранный язык сохраняется в профиле пользователя: колонка `locale` заполняется при регистрации и обновляется при переключении языка. Письма рендерятся на языке получателя, включая тему.
+A background task has no access to the browser's cookie — the HTTP request is long gone by then. So the chosen language is stored in the user profile: the `locale` column is set at registration and updated when the user switches languages. Emails are rendered in the recipient's language, subject line included.
 
-## Замеры
+## Measurements
 
-### Производительность геопоиска
+### Geo search performance
 
-100 000 объявлений со случайными координатами, PostgreSQL 16, радиус 5 км:
+100,000 listings with random coordinates, PostgreSQL 16, 5 km radius:
 
-| Запрос | Индекс | План | Время |
+| Query | Index | Plan | Time |
 |---|---|---|---|
-| `ST_DWithin` | GIST | Index Scan | 6.8 мс |
-| `ST_DWithin` | нет | Parallel Seq Scan | 99.5 мс |
-| `ST_Distance < 5000` | GIST | Parallel Seq Scan | 100.6 мс |
+| `ST_DWithin` | GIST | Index Scan | 6.8 ms |
+| `ST_DWithin` | none | Parallel Seq Scan | 99.5 ms |
+| `ST_Distance < 5000` | GIST | Parallel Seq Scan | 100.6 ms |
 
-Третья строка показывает, что наличие индекса само по себе ничего не гарантирует. `ST_Distance` вычисляется для каждой строки таблицы, и планировщик не может использовать пространственный индекс. `ST_DWithin` сначала отбирает кандидатов по ограничивающим прямоугольникам через индекс и применяет точную геодезическую формулу только к ним — в плане это видно по строке `Rows Removed by Filter`.
+The third row shows that having an index guarantees nothing by itself. `ST_Distance` is computed for every row in the table, and the planner cannot use the spatial index. `ST_DWithin` first selects candidates by bounding boxes through the index and applies the exact geodesic formula only to them — visible in the plan as the `Rows Removed by Filter` line.
 
-Колонка объявлена как `geography`, а не `geometry`. С типом `geometry` и SRID 4326 расстояние вычисляется в градусах, и запрос «радиус 5 км» вернул бы бессмысленный результат — причём без всякой ошибки.
+The column is declared as `geography`, not `geometry`. With `geometry` and SRID 4326, distances are computed in degrees, and a "5 km radius" query would return a meaningless result — without any error at all.
 
-### Качество матчинга по фотографии
+### Photo matching quality
 
-Набор из 15 собак, по 2 фотографии на каждую, снятых в разных условиях:
+A set of 15 dogs, two photos each, taken in different conditions:
 
-| Подход | Recall@1 | Recall@5 | Recall@10 |
+| Approach | Recall@1 | Recall@5 | Recall@10 |
 |---|---|---|---|
-| CLIP ViT-B/32, полное фото | 0.567 | 0.767 | 0.833 |
-| CLIP ViT-B/32, кроп по детектору YOLO | 0.700 | 0.833 | 0.933 |
+| CLIP ViT-B/32, full photo | 0.567 | 0.767 | 0.833 |
+| CLIP ViT-B/32, YOLO crop | 0.700 | 0.833 | 0.933 |
 
-Детекция собаки перед вычислением эмбеддинга убирает из вектора информацию о фоне. Без неё модель кодирует сцену целиком, и фотографии разных собак в похожей обстановке оказываются ближе друг к другу, чем два снимка одной собаки дома и на улице.
+Detecting the dog before computing the embedding removes background information from the vector. Without it, the model encodes the whole scene, and photos of different dogs in similar surroundings end up closer together than two photos of the same dog at home and outdoors.
 
-Recall@k выбран целевой метрикой потому, что система не выносит окончательного решения — она показывает список кандидатов, а выбирает человек. Владельцу не важно, стоит его собака на первом месте или на седьмом; важно, чтобы она была в списке, который он просмотрит.
+Recall@k is the target metric because the system does not make the final call — it shows a list of candidates, and a person decides. An owner does not care whether their dog is ranked first or seventh; what matters is that it appears in the list they look through.
 
-### Доля распознанных собак
+### Dog detection rate
 
-| Выборка | Фотографий | Собака найдена |
+| Sample | Photos | Dog detected |
 |---|---|---|
-| Собственный набор | 30 | 24 (80%) |
-| Демо-данные: Dog CEO и собственный набор | 230 | 192 (83%) |
+| Own dataset | 30 | 24 (80%) |
+| Demo data: Dog CEO and own dataset | 230 | 192 (83%) |
 
-Результат воспроизвёлся на выборке в восемь раз больше, так что это устойчивая характеристика связки YOLOv8n и фотографий «как в жизни», а не случайность малой выборки. Остальные снимки обрабатываются целиком: модель, обученная на COCO, плохо справляется с крупными планами морды и с кадрами, где собака занимает малую часть площади.
+The result held on a sample eight times larger, so it is a stable property of YOLOv8n on real-world dog photos rather than a small-sample fluke. The remaining photos are processed whole: a model trained on COCO struggles with close-ups of a dog's face and with shots where the dog occupies a small part of the frame.
 
-### Об интерпретации косинусного сходства
+### Interpreting cosine similarity
 
-На тестовой выборке сходство двух фотографий одной собаки составило 0.604, тогда как сходство заведомо разных изображений не превышало 0.31.
+On the test set, two photos of the same dog had a similarity of 0.604, while clearly different images never exceeded 0.31.
 
-Порог отсечения 0.55 выбран внутри этого промежутка. Абсолютные значения косинуса для эмбеддингов CLIP не интерпретируются как «процент похожести» — значение имеет только относительный разрыв между совпадениями и несовпадениями.
+The 0.55 cutoff sits inside that gap. Absolute cosine values for CLIP embeddings should not be read as "percent similarity" — what matters is the relative gap between matches and non-matches.
 
-### Почему на векторах нет индекса
+### Why the vectors have no index
 
-Индекс HNSW ускоряет поиск ближайших соседей ценой приблизительности и строится долго. На нескольких сотнях векторов полный перебор быстрее: Postgres прочитает таблицу за миллисекунды, а индекс добавит только накладных расходов.
+An HNSW index speeds up nearest-neighbor search at the cost of approximation and takes a while to build. With a few hundred vectors, a full scan is faster: Postgres reads the table in milliseconds, and an index would only add overhead.
 
-Индекс начинает окупаться от десятков тысяч записей — в отличие от GIST для геоданных, который нужен сразу, потому что геометрические операции дороже скалярного произведения.
+An index starts paying off at tens of thousands of rows — unlike the GIST index on geodata, which is needed from the start because geometric operations are more expensive than a dot product.
 
-## Известные ограничения
+## Known limitations
 
-**Похожие породы.** Собаки распространённых пород визуально мало отличаются друг от друга. Для золотистого ретривера система вернёт десятки кандидатов с высоким сходством. Частично компенсируется фильтрами по радиусу и дате, полностью не решается без индивидуальных признаков — клейма, чипа, особых примет.
+**Similar breeds.** Dogs of common breeds look very much alike. For a golden retriever, the system returns dozens of candidates with high similarity. Radius and date filters help partly, but the problem cannot be fully solved without individual features — tattoos, microchips, distinctive markings.
 
-**Качество фотографий.** Модель чувствительна к ракурсу и освещению. Снимок со спины и снимок морды одной собаки могут оказаться дальше друг от друга, чем фотографии двух разных собак в одинаковом ракурсе.
+**Photo quality.** The model is sensitive to angle and lighting. A shot from behind and a close-up of the face of the same dog can end up further apart than photos of two different dogs taken from the same angle.
 
-**Точность координат.** Координаты объявлений публикуются без изменений. Для находок это необходимо: владелец ориентируется по точке, и погрешность в двести метров может стоить результата. Для объявлений о пропаже точка обычно расположена рядом с домом владельца, и вместе с именем и телефоном в том же объявлении раскрывает больше, чем требуется. В production-версии разумным решением было бы детерминированное смещение координат для объявлений о пропаже либо явный выбор пользователя при публикации.
+**Coordinate precision.** Listing coordinates are published as is. For found dogs this is necessary: the owner relies on the pin, and an error of two hundred meters can cost the outcome. For lost dogs, the pin is usually close to the owner's home, and together with the name and phone number in the same listing it reveals more than it should. A production version would reasonably apply a deterministic offset to lost-dog coordinates, or let the user choose at posting time.
 
-**Карта загружает объявления списком.** Карта запрашивает объявления одним запросом с ограничением по количеству, а не по видимой области. На демо-объёме это незаметно; при росте базы правильным решением была бы загрузка по границам текущего экрана с перезапросом при перемещении карты.
+**The map loads listings as a list.** The map fetches listings in one request with a count limit rather than by the visible area. At demo scale this is invisible; as the database grows, the right approach would be loading by the current viewport bounds and refetching when the map moves.
 
-**Доставка писем не подтверждается.** SMTP-сервер принимает письмо к отправке, и уведомление помечается отправленным. Если адрес не существует, отказ приходит позже и асинхронно — узнать о нём можно только разбором bounce-сообщений, который не реализован.
+**Email delivery is not confirmed.** The SMTP server accepts a message for delivery, and the notification is marked as sent. If the address does not exist, the rejection arrives later and asynchronously — it could only be detected by parsing bounce messages, which is not implemented.
 
-**Сообщения об ошибках API не локализованы.** Тексты вида «Объявление не найдено» возвращаются сервером на русском независимо от выбранного языка. Интерфейс показывает собственный запасной текст там, где серверное сообщение отсутствует.
+**API error messages are not localized.** Messages such as "Listing not found" come back from the server in Russian regardless of the selected language. The interface shows its own fallback text where a server message is absent.
 
-**Общие учётные данные MinIO.** Приложение подключается к хранилищу с учётной записью администратора. Правильнее завести отдельного пользователя с правами только на один бакет.
+**Shared MinIO credentials.** The application connects to storage with the administrator account. A dedicated user with access to a single bucket would be more appropriate.
 
-**Публичное чтение бакета.** Фотографии доступны по прямой ссылке без подписи. Это соответствует тому, что они и так показываются всем в объявлениях, а ключи файлов случайны и не угадываются. Для закрытого контента потребовались бы подписанные ссылки на чтение с ограниченным сроком жизни.
+**Public bucket reads.** Photos are available by direct link without a signature. This matches the fact that they are shown to everyone in listings anyway, and file keys are random and cannot be guessed. Private content would call for signed read URLs with a limited lifetime.
 
-**Осиротевшие файлы.** Удаление объявления не очищает объектное хранилище — файлы остаются в MinIO. Решалось бы фоновой задачей сверки или политикой жизненного цикла на бакете.
+**Orphaned files.** Deleting a listing does not clean up object storage — the files stay in MinIO. A background reconciliation job or a lifecycle policy on the bucket would address this.
 
-**Изображения в письмах на localhost.** Почтовые клиенты загружают картинки через собственные прокси-серверы, которые не имеют доступа к `localhost`. При локальной разработке в письмах вместо фотографии отображается заглушка.
+**Images in emails on localhost.** Email clients load images through their own proxy servers, which cannot reach `localhost`. During local development, emails show a placeholder instead of the photo. On the public deployment images display normally.
 
-**Формат дат.** Даты выводятся как `19.09.2026` независимо от языка интерфейса. Для англоязычного пользователя привычнее был бы другой порядок, но формат с точками читается однозначно в обеих локалях.
+**Date format.** Dates are shown as `19.09.2026` regardless of the interface language. An English-speaking user would expect a different order, but the dotted format reads unambiguously in both locales.
 
-**Один процесс.** Лимит Nominatim (один запрос в секунду) и тротлинг писем реализованы в памяти приложения, а модели занимают около гигабайта на процесс. Поэтому приложение запускается с одним воркером. Для горизонтального масштабирования понадобились бы общий счётчик в Redis и отдельный сервис для вычисления эмбеддингов.
+**Single process.** The Nominatim rate limit (one request per second) and email throttling live in application memory, and the models take about a gigabyte per process. That is why the application runs with a single worker. Horizontal scaling would require a shared counter in Redis and a separate service for computing embeddings.
 
-**Тип уведомления без внешнего ключа.** Колонка `subject_id` в таблице уведомлений ссылается на разные таблицы в зависимости от типа, поэтому внешний ключ на неё не поставлен. Альтернатива — отдельная колонка под каждый тип — усложнила бы уникальное ограничение, на котором держится дедупликация.
+**Notification subject without a foreign key.** The `subject_id` column in the notifications table points to different tables depending on the notification type, so it has no foreign key. The alternative — a separate column per type — would complicate the unique constraint that deduplication relies on.
