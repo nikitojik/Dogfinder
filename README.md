@@ -43,6 +43,28 @@ Step 2 is not cosmetic. Without the crop, the model encodes the whole scene, and
 
 ![Listings feed with filters](docs/feed.jpg)
 
+## Why I've started this project
+
+I've had two dogs of my own. Whenever I see a "lost dog" poster taped to a lamp
+post, I picture myself in that owner's place, and it's a frightening thought.
+
+## Problem and how my project resolve it
+
+The most reliable data on lost dogs comes from an ASPCA study published in 2012
+([Weiss, Slater & Lord, *Animals*](https://doi.org/10.3390/ani2020301)). In a
+national survey of 1,015 US households, 14% of dogs had gone missing at least once
+in the previous five years. Most were eventually found — 93% made it home. What
+stands out is how: about half of owners found their dog by searching the
+neighborhood, only 15% of dogs were recovered thanks to an ID tag or microchip,
+and just 6% of owners found their dog at a shelter.
+
+Lost dogs are found locally, by people nearby. A poster on a lamp post is exactly
+that channel, only on paper: a photo, a phone number, and the hope that the right
+neighbor walks by. DogFinder does the same thing, except the photo becomes
+searchable — someone who finds a dog doesn't have to spot the right poster, the
+system matches the two listings itself. The target is the remaining 7%: the dogs
+whose owners never find them.
+
 ## Tech stack
 
 | Layer | Choice | Why |
