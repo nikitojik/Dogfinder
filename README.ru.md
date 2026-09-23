@@ -37,6 +37,12 @@
 - [x] Демо-данные, тесты, CI, production-образ
 - [x] Публичный деплой с HTTPS
 
+![Map with clustered listings](docs/map_popup.jpg)
+
+![Possible matches on a listing page](docs/listing_matches.jpg)
+
+![Listings feed with filters](docs/feed.jpg)
+
 ## Технологии
 
 | Слой | Выбор | Зачем |

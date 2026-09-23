@@ -37,6 +37,12 @@ Step 2 is not cosmetic. Without the crop, the model encodes the whole scene, and
 - [x] Demo data, tests, CI, production image
 - [x] Public deployment with HTTPS
 
+![Map with clustered listings](docs/map_popup.jpg)
+
+![Possible matches on a listing page](docs/listing_matches.jpg)
+
+![Listings feed with filters](docs/feed.jpg)
+
 ## Tech stack
 
 | Layer | Choice | Why |
