@@ -90,6 +90,10 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
+    # default — своя сеть DogFinder (app, minio); edge — общая с Alpenstroke
+    networks:
+      - default
+      - edge
     depends_on:
       - app
 
@@ -98,3 +102,7 @@ volumes:
   miniodata:
   caddy_data:
   caddy_config:
+
+networks:
+  edge:
+    external: true

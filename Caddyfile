@@ -6,3 +6,8 @@
 {$S3_HOST} {
     reverse_proxy minio:9000
 }
+
+alpenstroke.nkolesnikov.dev {
+    encode gzip
+    reverse_proxy alpenstroke:8000
+}
